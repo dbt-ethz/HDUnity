@@ -1,0 +1,13 @@
+{
+    "name": "com.dbt.hdunity",
+    "version": "1.0.0",
+    "displayName": "DBT HDUnity",
+    "description": "This is an example package",
+    "unity": "2022.1",
+    "documentationUrl": "https://github.com/dbt-ethz/HDUnity",
+    "author": {
+      "name": "DBT ETH",
+      "email": "yang@arch.ethz.ch",
+      "url": "https://dbt.arch.ethz.ch/"
+    }
+  }
