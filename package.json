@@ -1,7 +1,7 @@
 {
-    "name": "com.dbt.hdunity",
+    "name": "com.dbt.hdgeom",
     "version": "1.0.0",
-    "displayName": "DBT HDUnity",
+    "displayName": "DBT HDGeom",
     "description": "This is an example package",
     "unity": "2022.1",
     "documentationUrl": "https://github.com/dbt-ethz/HDUnity",
