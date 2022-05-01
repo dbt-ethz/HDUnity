@@ -16,7 +16,7 @@ public class HDCameraOrbit : MonoBehaviour
     public float ScrollSensitvity = 2f;
     public float OrbitDampening = 10f;
     public float ScrollDampening = 6f;
-
+    public float maxDistance = 200f;
     public bool CameraDisabled = false;
 
 
@@ -64,7 +64,7 @@ public class HDCameraOrbit : MonoBehaviour
 
                 this._CameraDistance += ScrollAmount * -1f;
 
-                this._CameraDistance = Mathf.Clamp(this._CameraDistance, 1.5f, 100f);
+                this._CameraDistance = Mathf.Clamp(this._CameraDistance, 1.5f, maxDistance);
             }
         }
 
