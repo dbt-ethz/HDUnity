@@ -109,7 +109,7 @@ namespace HD
                             int cx = coords[0] + x;
                             int cy = coords[1] + y;
                             int cz = coords[2] + z;
-                            if (cx > 0 && cy > 0 && cz > 0 && cx < nX && cy < nY && cz < nZ)
+                            if (cx >= 0 && cy >= 0 && cz >= 0 && cx < nX && cy < nY && cz < nZ)
                             {
                                 cellNbs[i] = GetIndex(cx, cy, cz);
                             }
@@ -126,6 +126,17 @@ namespace HD
             kernel[1] = new int[] { 0, 0, 1 };
             kernel[2] = new int[] { 1, 0, 0 };
             kernel[3] = new int[] { 0, 0, -1 };
+            return GetNbs(kernel);
+        }
+        public int[][] GetXYZNbs6()
+        {
+            int[][] kernel = new int[6][];
+            kernel[0] = new int[] { -1, 0, 0 };
+            kernel[1] = new int[] { 0, 0, 1 };
+            kernel[2] = new int[] { 1, 0, 0 };
+            kernel[3] = new int[] { 0, 0, -1 };
+            kernel[4] = new int[] { 0, 1, 0 };
+            kernel[5] = new int[] { 0, -1, 0 };
             return GetNbs(kernel);
         }
     }
