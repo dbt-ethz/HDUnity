@@ -120,7 +120,9 @@ namespace HD
 		{
 			//List<int>newVertices=new List
 			List<Vector3> oldVertices = new List<Vector3>(vertices);
+			List<Color>listColors = new List<Color>(Colors);
 			this.vertices.Clear();
+			this.Colors.Clear();
 			foreach (int[] face in faces)
 			{
 				for (int i = 0; i < face.Length; i++)
@@ -129,9 +131,11 @@ namespace HD
 					Vector3 v = oldVertices[face[i]];
 
 					this.vertices.Add(v);
+					this.Colors.Add(listColors[face[i]]);
 					face[i] = this.vertices.Count - 1;
 				}
 			}
+			
 		}
 		public void TriangulateQuads()
 		{
