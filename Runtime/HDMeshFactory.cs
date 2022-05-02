@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 namespace HD
@@ -48,15 +49,7 @@ namespace HD
 			v[5] = mesh.AddVertex(x1, y2, z2, color);
 			v[6] = mesh.AddVertex(x2, y2, z2, color);
 			v[7] = mesh.AddVertex(x2, y1, z2, color);
-			mesh.AddQuad(v[0], v[1], v[2], v[3]);
-			mesh.AddQuad(v[7], v[6], v[5], v[4]);
-			for (int i0 = 0; i0 < 4; i0++)
-            {
-				int i1 = (i0 + 1) % 4;
-				int i2 = i1+4;
-				int i3 = i0 + 4;
-				mesh.AddQuad(v[i3], v[i2], v[i1], v[i0]);
-			}
+			AddBoxQuads(mesh, v);
 		}
 
 		public static HDMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color color)
@@ -66,6 +59,35 @@ namespace HD
 			AddBox(mesh, x1, y1, z1, x2, y2, z2, color);
 			return mesh;
 
+		}
+		private static void AddBoxQuads(HDMesh mesh, int[] v)
+        {
+			mesh.AddQuad(v[0], v[1], v[2], v[3]);
+			mesh.AddQuad(v[7], v[6], v[5], v[4]);
+			for (int i0 = 0; i0 < 4; i0++)
+			{
+				int i1 = (i0 + 1) % 4;
+				int i2 = i1 + 4;
+				int i3 = i0 + 4;
+				mesh.AddQuad(v[i3], v[i2], v[i1], v[i0]);
+			}
+		}
+		public static void ExtrudeQuadYtoZ(HDMesh mesh,List<Vector2> bounds, float y1,float y2,Color color)
+        {
+			int[] v = new int[8];
+			for (int i = 0; i < bounds.Count; i++)
+            {
+				Vector2 v2d = bounds[i];
+				v[i]= mesh.AddVertex(v2d.x, y1, v2d.y, color);
+
+			}
+			for (int i = 0; i < bounds.Count; i++)
+			{
+				Vector2 v2d = bounds[i];
+				v[i+4] = mesh.AddVertex(v2d.x, y2, v2d.y, color);
+
+			}
+			AddBoxQuads(mesh,v);
 		}
 
 
