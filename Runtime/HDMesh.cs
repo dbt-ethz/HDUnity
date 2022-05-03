@@ -35,6 +35,12 @@ namespace HD
 			vertices.Add(new Vector3(x, y, z));
 			return vertices.Count - 1;
 		}
+		public int AddVertex(Vector3 v,Color color)
+		{
+			vertices.Add(v);
+			Colors.Add(color);
+			return vertices.Count - 1;
+		}
 		public int AddVertex(float x, float y, float z, Color color)
 		{
 			vertices.Add(new Vector3(x, y, z));
@@ -115,6 +121,18 @@ namespace HD
 		{
 			faces.Add(new int[] { index1, index2, index3, index4 });
 		}
+
+		public void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Color color)
+		{
+			int[] vs = new int[4];
+			vs[0] = this.AddVertex(v1,color);
+			vs[1] = this.AddVertex(v2, color);
+			vs[2] = this.AddVertex(v3, color);
+			vs[3] = this.AddVertex(v4, color);
+			faces.Add(vs);
+		}
+
+
 
 		public void SeparateVertices()
 		{

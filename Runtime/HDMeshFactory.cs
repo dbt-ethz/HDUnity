@@ -24,11 +24,24 @@ namespace HD
 			}
 			mesh.AddFace(quad);
 		}
+
+		public static void AddQuad(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
+		{
+			AddQuad(mesh, a.x, a.y, z1, b.x, b.y, z1, b.x, b.y, z2, a.x, a.y,z2, color, flip);
+		}
 		public static void AddQuadXY(HDMesh mesh, float x1, float y1,  float x2, float y2, float z,  Color color, bool flip)
 		{
 
 			AddQuad(mesh,x1,y1,z,x1,y2,z,x2,y2,z, x2, y1, z,color,flip);
 		}
+
+        public static void AddQuadXY(HDMesh mesh, Vector2[] vs, float z, Color color, bool flip)
+		{
+
+			AddQuad(mesh, vs[0].x, z, vs[0].y, vs[1].x, z, vs[1].y, vs[2].x, z, vs[2].y, vs[3].x, z, vs[3].y, color, flip);
+		}
+
+
 		public static void AddQuadXZ(HDMesh mesh, float x1, float z1, float x2, float z2, float y, Color color, bool flip)
 		{
 			AddQuad(mesh, x1, y, z1, x1, y, z2, x2, y, z2, x2, y, z1, color, flip);
@@ -72,7 +85,7 @@ namespace HD
 				mesh.AddQuad(v[i3], v[i2], v[i1], v[i0]);
 			}
 		}
-		public static void ExtrudeQuadYtoZ(HDMesh mesh,List<Vector2> bounds, float y1,float y2,Color color)
+		public static void ExtrudeQuadYtoZ(HDMesh mesh,IList<Vector2> bounds, float y1,float y2,Color color)
         {
 			int[] v = new int[8];
 			for (int i = 0; i < bounds.Count; i++)
