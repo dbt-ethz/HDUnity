@@ -24,10 +24,10 @@ namespace HD
 			}
 			mesh.AddFace(quad);
 		}
-
-		public static void AddQuad(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
+		
+		public static void AddQuadByLine(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
 		{
-			AddQuad(mesh, a.x, a.y, z1, b.x, b.y, z1, b.x, b.y, z2, a.x, a.y,z2, color, flip);
+			AddQuad(mesh, a.x, z1, a.y, b.x, z1, b.y, b.x, z2, b.y, a.x, z2, a.y, color, flip);
 		}
 		public static void AddQuadXY(HDMesh mesh, float x1, float y1,  float x2, float y2, float z,  Color color, bool flip)
 		{
