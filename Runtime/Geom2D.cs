@@ -37,8 +37,8 @@ public static class Vector2Extension
     {
 
         float radians = degrees * Mathf.Deg2Rad;
-        float sin = Mathf.Sin(degrees * Mathf.Deg2Rad);
-        float cos = Mathf.Cos(degrees * Mathf.Deg2Rad);
+        float sin = Mathf.Sin(radians);
+        float cos = Mathf.Cos(radians);
 
         float tx = v.x;
         float ty = v.y;

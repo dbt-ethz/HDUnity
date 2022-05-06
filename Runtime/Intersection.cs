@@ -24,10 +24,12 @@ public class Intersection
 		double y = aY + r * (bY - aY);
 		return new Vector2((float)x, (float)y);
 	}
+
+	
 	public static Vector2? RaySegment(Vector2 org,Vector2 dir,
 		Vector2 c,Vector2 d)
 	{
-		float denominator = dir.x * (d.y - c.y) - (dir.y) * (d.x - c.y);
+		float denominator = dir.x * (d.y - c.y) - (dir.y) * (d.x - c.x);
 		if (denominator == 0) { 
 			//Nullable<Vector2> result = null;
 			return null;
@@ -45,4 +47,6 @@ public class Intersection
 		Vector2 intersection= org + r * dir;
 		return intersection;
 	}
+
+	
 }
