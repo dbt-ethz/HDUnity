@@ -213,8 +213,8 @@ namespace HD
                     {
                         case 1:
                             //bottom left triangle
-                            contours.Add(c);
                             contours.Add(d);
+                            contours.Add(c);
                             break;
                         case 2:
                             //bottom right triangle
