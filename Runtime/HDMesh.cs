@@ -197,6 +197,23 @@ namespace HD
 			faces.Add(vs);
 		}
 
+		public void AddTriangle(float x1, float y1,float z1, float x2, float y2,float z2, float x3, float y3, float z3, Color color1, Color color2, Color color3)
+		{
+			int[] vs = new int[3];
+			vs[0] = this.AddVertex(x1, y1, z1, color1);
+			vs[1] = this.AddVertex(x2, y2, z2, color2);
+			vs[2] = this.AddVertex(x3, y3, z3, color3);
+			faces.Add(vs);
+		}
+		public void AddTri2D(float x1, float y1, float x2, float y2, float x3, float y3, float z, Color color1,Color color2,Color color3)
+		{
+			int[] vs = new int[3];
+			vs[0] = this.AddVertex(x1, y1, z, color1);
+			vs[1] = this.AddVertex(x2, y2, z, color2);
+			vs[2] = this.AddVertex(x3, y3, z, color3);
+			faces.Add(vs);
+		}
+
 
 		public void AddQuad2D(float x1, float y1, float x2, float y2, float x3, float y3,float x4,float y4, float z , Color color)
 		{
