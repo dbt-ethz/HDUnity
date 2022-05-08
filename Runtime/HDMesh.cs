@@ -29,6 +29,27 @@ namespace HD
 			this.Colors = new List<Color>();
 		}
 
+		public void AddMesh(HDMesh mesh)
+        {
+			int nV = this.VertexCount();
+			for (int i = 0; i < mesh.vertices.Count; i++)
+            {
+				vertices.Add(mesh.vertices[i]);
+				Colors.Add(mesh.Colors[i]);
+			}
+
+			for (int i = 0; i < mesh.faces.Count; i++)
+			{
+				int[] face = mesh.faces[i];
+				int[] newFace = new int[face.Length];
+				for (int j = 0; j < face.Length; j++)
+                {
+					newFace[j] = face[j] + nV;
+
+				}
+				faces.Add(newFace);
+			}
+		}
 
 		public int AddVertex(float x, float y, float z)
 		{
@@ -122,6 +143,33 @@ namespace HD
 			faces.Add(new int[] { index1, index2, index3, index4 });
 		}
 
+		public void FlipFaces()
+		{
+			for (int i = 0; i < faces.Count; i++)
+
+			{
+				int[] face = faces[i];
+				int[] face2 = new int[face.Length];
+
+				for (int j = 0; j < face.Length; j++)
+                {
+					face2[j] = face[face.Length - 1 - j];
+
+				}
+				faces[i] = face2;
+			}
+
+		}
+		public void FlipYZ()
+        {
+			for (int i=0;i<vertices.Count;i++)
+				
+			{
+					Vector3 v = vertices[i];
+					vertices[i] = new Vector3(v.x,v.z,v.y);
+			}
+			
+        }
 		public void AddQuad(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Color color)
 		{
 			int[] vs = new int[4];
@@ -129,6 +177,34 @@ namespace HD
 			vs[1] = this.AddVertex(v2, color);
 			vs[2] = this.AddVertex(v3, color);
 			vs[3] = this.AddVertex(v4, color);
+			faces.Add(vs);
+		}
+		public void AddTri2D(float x1,float y1,float x2,float y2,float x3,float y3)
+		{
+			AddTri2D(x1,y1,x2,y2,x3,y3,0,Color.white);
+		}
+		public void AddTri2D(float x1, float y1, float x2, float y2, float x3, float y3,float z)
+        {
+			AddTri2D(x1, y1, x2, y2, x3, y3, z, Color.white);
+
+		}
+		public void AddTri2D(float x1, float y1, float x2, float y2, float x3, float y3, float z,Color color)
+		{
+			int[] vs = new int[3];
+			vs[0] = this.AddVertex(x1, y1, z, color);
+			vs[1] = this.AddVertex(x2, y2, z, color);
+			vs[2] = this.AddVertex(x3, y3, z, color);
+			faces.Add(vs);
+		}
+
+
+		public void AddQuad2D(float x1, float y1, float x2, float y2, float x3, float y3,float x4,float y4, float z , Color color)
+		{
+			int[] vs = new int[4];
+			vs[0] = this.AddVertex(x1, y1, z, color);
+			vs[1] = this.AddVertex(x2, y2, z, color);
+			vs[2] = this.AddVertex(x3, y3, z, color);
+			vs[3] = this.AddVertex(x4, y4, z, color);
 			faces.Add(vs);
 		}
 
