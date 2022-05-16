@@ -6,8 +6,8 @@ namespace HD
 {
 	public class HDMesh
 	{
-		List<Vector3> vertices;
-		List<int[]> faces;
+		public List<Vector3> vertices;
+		public List<int[]> faces;
 		private List<Color> vertexColors;
 
 		private List<int[]> topoEdges;
@@ -179,6 +179,16 @@ namespace HD
 			vs[3] = this.AddVertex(v4, color);
 			faces.Add(vs);
 		}
+		public void AddQuad(Vector3[] vertices, Color color)
+		{
+			int[] vs = new int[4];
+			vs[0] = this.AddVertex(vertices[0], color);
+			vs[1] = this.AddVertex(vertices[1], color);
+			vs[2] = this.AddVertex(vertices[2], color);
+			vs[3] = this.AddVertex(vertices[3], color);
+			faces.Add(vs);
+		}
+
 		public void AddTri2D(float x1,float y1,float x2,float y2,float x3,float y3)
 		{
 			AddTri2D(x1,y1,x2,y2,x3,y3,0,Color.white);
@@ -205,6 +215,15 @@ namespace HD
 			vs[2] = this.AddVertex(x3, y3, z3, color3);
 			faces.Add(vs);
 		}
+		public void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
+		{
+			int[] vs = new int[3];
+			vs[0] = this.AddVertex(v1, color);
+			vs[1] = this.AddVertex(v2, color);
+			vs[2] = this.AddVertex(v3, color);
+			faces.Add(vs);
+		}
+
 		public void AddTri2D(float x1, float y1, float x2, float y2, float x3, float y3, float z, Color color1,Color color2,Color color3)
 		{
 			int[] vs = new int[3];
@@ -473,6 +492,31 @@ namespace HD
 		public ReadOnlyCollection<int[]> GetTopoVertexEdges()
 		{
 			return new ReadOnlyCollection<int[]>(topoVertexEdges);
+		}
+
+		public HDMesh copy()
+        {
+			// temp solution. need to add back more face properties
+			HDMesh meshcopy = new HDMesh();
+
+			for (int i = 0; i < this.vertices.Count; i++)
+			{
+				meshcopy.vertices.Add(this.vertices[i]);
+				meshcopy.Colors.Add(this.Colors[i]);
+			}
+
+			for (int i = 0; i < this.faces.Count; i++)
+			{
+				int[] face = this.faces[i];
+				int[] newFace = new int[face.Length];
+				for (int j = 0; j < face.Length; j++)
+				{
+					newFace[j] = face[j];
+
+				}
+				meshcopy.faces.Add(newFace);
+			}
+			return meshcopy;
 		}
 	}
 }
