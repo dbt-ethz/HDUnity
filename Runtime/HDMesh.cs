@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
@@ -20,6 +21,29 @@ namespace HD
 		static int FACE2 = 3;
 		static int NONE = -1;
 
+		public HDMesh Copy()
+        {
+			HDMesh copyMesh = new HDMesh();
+			//copyMesh.vertices = new List<Vector3>();
+			foreach (Vector3 vertex in vertices)
+			{
+				copyMesh.AddVertex(vertex.x,vertex.y,vertex.z);
+			}
+
+			//copyMesh.faces = new List<int[]>(this.FacesCount());
+			foreach (int[] face in faces)
+            {
+				copyMesh.AddFace((int[])face.Clone());
+			}
+
+			foreach (Color color in vertexColors)
+			{
+				copyMesh.AddColor(color);
+			}
+			return copyMesh;
+
+		}
+
 		public List<Color> Colors { get => vertexColors; set => vertexColors = value; }
 
 		public HDMesh()
@@ -27,6 +51,38 @@ namespace HD
 			this.vertices = new List<Vector3>();
 			this.faces = new List<int[]>();
 			this.Colors = new List<Color>();
+		}
+
+		public void SetVertexColors(Color color)
+		{
+			for (int i = 0; i < vertexColors.Count; i++)
+			{
+				vertexColors[i] = color;
+			}
+		}
+
+		public void Translate(float x,float y,float z)
+        {
+			/*foreach (Vector3 v in vertices)
+            {
+				v.Set(v.x + x, v.y + y, v.z + z);
+            }*/
+			for (int i = 0; i < vertices.Count; i++)
+            {
+				Vector3 v = vertices[i];
+				vertices[i] = new Vector3(v.x + x, v.y + y, v.z + z);
+
+			}
+        }
+
+		public void Scale(float x, float y, float z)
+		{
+			for (int i = 0; i < vertices.Count; i++)
+			{
+				Vector3 v = vertices[i];
+				vertices[i] = new Vector3(v.x * x, v.y * y, v.z * z);
+
+			}
 		}
 
 		public void AddMesh(HDMesh mesh)
