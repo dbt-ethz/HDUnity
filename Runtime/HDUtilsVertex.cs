@@ -11,7 +11,7 @@ namespace HD
             Vector3[] face_v = new Vector3[face.Length];
             for (int i = 0; i < face.Length; i++)
             {
-                face_v[i] = mesh.vertices[face[i]];
+                face_v[i] = mesh.Vertices[face[i]];
             }
 
             return face_v;
