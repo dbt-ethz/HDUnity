@@ -21,6 +21,7 @@ namespace HD
 		static int FACE2 = 3;
 		static int NONE = -1;
 
+		public List<int[]>Faces {get=> faces; set => faces= value;}
 		public List<Vector3> Vertices {get=> vertices; set => vertices= value;}
 		public List<Color> Colors { get => vertexColors; set => vertexColors = value; }
 
