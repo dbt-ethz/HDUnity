@@ -10,6 +10,7 @@ namespace HD
 		List<Vector3> vertices;
 		List<int[]> faces;
 		private List<Color> vertexColors;
+		private List<Vector2> uvs;
 
 		private List<int[]> topoEdges;
 		private List<int[]> topoVertexEdges;
@@ -21,7 +22,8 @@ namespace HD
 		static int FACE2 = 3;
 		static int NONE = -1;
 
-		public List<int[]>Faces {get=> faces; set => faces= value;}
+		public List<Vector2> UVs {get=> uvs; set => uvs= value;}
+		public List<int[]> Faces {get=> faces; set => faces= value;}
 		public List<Vector3> Vertices {get=> vertices; set => vertices= value;}
 		public List<Color> Colors { get => vertexColors; set => vertexColors = value; }
 
@@ -271,7 +273,28 @@ namespace HD
 		}
 
 
-
+		public void SeparateVerticesWithUVs()
+		{
+			List<Vector3> oldVertices = new List<Vector3>(vertices);
+			List<Vector2> oldUVS = new List<Vector2>(uvs);
+			List<Color>listColors = new List<Color>(Colors);
+			this.vertices.Clear();
+			this.Colors.Clear();
+			this.uvs.Clear();
+			int vertexIndex=0;
+			foreach (int[] face in faces)
+			{
+				for (int i = 0; i < face.Length; i++)
+				{
+					vertexIndex=face[i];
+					this.vertices.Add(oldVertices[vertexIndex]);
+					this.Colors.Add(listColors[vertexIndex]);
+					this.uvs.Add(oldUVS[vertexIndex]);
+					face[i] = this.vertices.Count - 1;
+				}
+			}
+		}
+		
 		public void SeparateVertices()
 		{
 			List<Vector3> oldVertices = new List<Vector3>(vertices);
