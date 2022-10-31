@@ -91,6 +91,13 @@ namespace HD
 				vertices.Add(mesh.vertices[i]);
 				Colors.Add(mesh.Colors[i]);
 			}
+			if (uvs!=null&&mesh.UVs!=null){
+				for (int i = 0; i < mesh.vertices.Count; i++)
+            	{
+					uvs.Add(mesh.UVs[i]);
+				
+				}
+			}
 
 			for (int i = 0; i < mesh.faces.Count; i++)
 			{
@@ -294,7 +301,7 @@ namespace HD
 				}
 			}
 		}
-		
+
 		public void SeparateVertices()
 		{
 			List<Vector3> oldVertices = new List<Vector3>(vertices);
