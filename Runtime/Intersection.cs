@@ -24,15 +24,15 @@ public class Intersection
 		double y = aY + r * (bY - aY);
 		return new Vector2((float)x, (float)y);
 	}
-	
+
 public static Nullable<Vector2> LineLineIntersectionDir(Vector2 org1,Vector2 dir1,
 		Vector2 org2,Vector2 dir2)
 	{
-		double denominator = dir1.x * dir2.y - dir1.y * dir2.x;
+		float denominator = dir1.x * dir2.y - dir1.y * dir2.x;
 		if (denominator == 0)
 			return null;// parallel
-		double numerator = (org1.y - org2.y) * dir2.x - (org1.x - org2.x) * dir2.y;
-		double r = numerator / denominator;
+		float numerator = (org1.y - org2.y) * dir2.x - (org1.x - org2.x) * dir2.y;
+		float r = numerator / denominator;
 		return org1 + r * dir1;
 		
 	}
