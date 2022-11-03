@@ -549,7 +549,7 @@ namespace HD
 			return new ReadOnlyCollection<int[]>(topoVertexEdges);
 		}
 
-		public FillUnityMesh(Mesh mesh){
+		public void FillUnityMesh(Mesh mesh){
 			mesh.Clear();
         	mesh.vertices = this.VertexArray();
         	mesh.triangles = this.FlattenedTriangles();
