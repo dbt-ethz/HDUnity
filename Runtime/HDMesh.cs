@@ -548,5 +548,16 @@ namespace HD
 		{
 			return new ReadOnlyCollection<int[]>(topoVertexEdges);
 		}
+
+		public FillUnityMesh(Mesh mesh){
+			mesh.Clear();
+        	mesh.vertices = this.VertexArray();
+        	mesh.triangles = this.FlattenedTriangles();
+			if (this.UVs!=null&&this.UVs.Count==this.VertexArray().Count){
+ 				mesh.uv = this.UVs.ToArray();
+			}
+        	mesh.SetColors(this.Colors);
+        	mesh.RecalculateNormals();
+		}
 	}
 }
