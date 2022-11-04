@@ -316,7 +316,11 @@ namespace HD
 					Vector3 v = oldVertices[face[i]];
 
 					this.vertices.Add(v);
-					this.Colors.Add(listColors[face[i]]);
+					if (listColors.Count> face[i])
+                    {
+                        this.Colors.Add(listColors[face[i]]);
+                    }
+					
 					face[i] = this.vertices.Count - 1;
 				}
 			}
