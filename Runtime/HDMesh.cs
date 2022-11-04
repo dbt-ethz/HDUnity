@@ -553,7 +553,7 @@ namespace HD
 			mesh.Clear();
         	mesh.vertices = this.VertexArray();
         	mesh.triangles = this.FlattenedTriangles();
-			if (this.UVs!=null&&this.UVs.Count==this.VertexArray().Count){
+			if (this.UVs!=null&&this.UVs.Count==this.VertexArray().Length){
  				mesh.uv = this.UVs.ToArray();
 			}
         	mesh.SetColors(this.Colors);
