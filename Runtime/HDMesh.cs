@@ -20,7 +20,7 @@ namespace HD
 		static int VERTEX2 = 1;
 		static int FACE1 = 2;
 		static int FACE2 = 3;
-		static int NONE = -1;
+		//static int NONE = -1;
 
 		public List<Vector2> UVs {get=> uvs; set => uvs= value;}
 		public List<int[]> Faces {get=> faces; set => faces= value;}

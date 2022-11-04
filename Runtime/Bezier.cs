@@ -24,7 +24,7 @@ public class Bezier
             polyLine.Add(p);
             }
         }
-        return polyline;
+        return polyLine;
     }
     public List<Vector3> CalculateCubicBezier(int SEGMENT_COUNT)
     {
@@ -50,7 +50,7 @@ public class Bezier
          float segmentDomain=1f/curveCount;
          float localT=t-cCurve*segmentDomain;
          int nodeIndex = cCurve * 3;
-         return CalculateCubicBezierPoint(localT, controlPoints [nodeIndex].position, controlPoints [nodeIndex + 1].position, controlPoints [nodeIndex + 2].position, controlPoints [nodeIndex + 3].position);
+         return CalculateCubicBezierPoint(localT, controlPoints [nodeIndex], controlPoints [nodeIndex + 1], controlPoints [nodeIndex + 2], controlPoints [nodeIndex + 3]);
     }
 
     Vector3 CalculateCubicBezierPoint(float t, Vector3 p0, Vector3 p1, Vector3 p2, Vector3 p3)
