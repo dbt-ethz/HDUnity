@@ -41,7 +41,7 @@ public class Bezier
             polyLine.Add(p);
             }
         }
-        return polyline;
+        return polyLine;
     }
 
     Vector3 CalculateCubicBezierPoint(float t){
