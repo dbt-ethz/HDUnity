@@ -34,8 +34,8 @@ public class Geom2D
 public static class Vector2Extension
 {
     public static Vector2 FromPolar(float radius,float degrees){
-        float x = radius* Math.Cos(degrees);
-        float y = radius* Math.Sin(degrees);
+        float x = radius* Mathf.Cos(degrees);
+        float y = radius* Mathf.Sin(degrees);
        return  new Vector2(x, y);
     }
     public static Vector2 Rotate(this Vector2 v, float degrees)
