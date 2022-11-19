@@ -74,7 +74,7 @@ namespace HD
 
 		}
 
-		public static HDMesh createGridMesh(IList<Vector3>vertices, int nU,int nV,boolean uClosed)
+		public static HDMesh createGridMesh(IList<Vector3>vertices, int nU,int nV,bool uClosed)
         {
 
 			HDMesh mesh = new HDMesh();
