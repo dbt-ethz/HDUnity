@@ -73,6 +73,41 @@ namespace HD
 			return mesh;
 
 		}
+
+		public static HDMesh createGridMesh(IList<Vector3>vertices, int nU,int nV,boolean uClosed)
+        {
+
+			HDMesh mesh = new HDMesh();
+			mesh.Vertices=new List<Vector3>(vertices);
+			if (!uClosed){
+			for (int u=0;u<nU-1;u++){
+				int u2=u+1;
+				for (int v=0;v<nV-1;v++){
+					int v2=v+1;
+					int i1=u*nV+v;
+					int i2=u*nV+v2;
+					int i3=u2*nV+v;
+					int i4=u2*nV+v2;
+					mesh.AddQuad(i1,i2,i3,i4);
+				}
+			}
+			}
+			else{
+				for (int u=0;u<nU;u++){
+				int u2=(u+1)%nU;
+				for (int v=0;v<nV-1;v++){
+					int v2=v+1;
+					int i1=u*nV+v;
+					int i2=u*nV+v2;
+					int i3=u2*nV+v;
+					int i4=u2*nV+v2;
+					mesh.AddQuad(i1,i2,i3,i4);
+				}
+			}
+			}
+			return mesh;
+
+		}
 		private static void AddBoxQuads(HDMesh mesh, int[] v)
         {
 			mesh.AddQuad(v[0], v[1], v[2], v[3]);
