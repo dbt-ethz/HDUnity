@@ -83,6 +83,29 @@ namespace HD
 			}
 		}
 
+		
+
+		public void RotateZ(float degrees)
+		{
+			Rotate(degrees, new Vector3(0,0,1));
+		}
+
+		public void Rotate(float degrees, Vector3 axis)
+		{
+			Quaternion quat=Quaternion.AngleAxis(degrees, new Vector3(0,0,1));
+			for (int i = 0; i < vertices.Count; i++)
+			{
+				Vector3 v = vertices[i];
+				vertices[i] = v*quat;
+
+			}
+		}
+
+		public void RotateRadians(float radians, Vector3 axis)
+		{
+			Rotate(radians* Mathf.Rad2Deg,axis);
+		}
+
 		public void AddMesh(HDMesh mesh)
         {
 			int nV = this.VertexCount();
