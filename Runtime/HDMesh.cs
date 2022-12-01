@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.FilePathAttribute;
+
 namespace HD
 {
 	public class HDMesh
@@ -85,23 +87,42 @@ namespace HD
 
 		
 
-		public void RotateZ(float degrees)
+		public void RotateZ(float radians)
 		{
-			Rotate(degrees, new Vector3(0,0,1));
+			Rotate(radians * Mathf.Rad2Deg, new Vector3(0,0,1));
 		}
 
 		public void Rotate(float degrees, Vector3 axis)
 		{
 			Quaternion quat=Quaternion.AngleAxis(degrees, new Vector3(0,0,1));
-			for (int i = 0; i < vertices.Count; i++)
+            //Quaternion quat=Quaternion.Euler(0, 0, degrees);
+
+            for (int i = 0; i < vertices.Count; i++)
 			{
 				Vector3 v = vertices[i];
-				vertices[i] = v*quat;
 
-			}
+				vertices[i] = Rotated(v,quat);
+
+                
+            }
 		}
 
-		public void RotateRadians(float radians, Vector3 axis)
+        public static Vector3 Rotated( Vector3 vector, Quaternion rotation, Vector3 pivot = default(Vector3))
+        {
+            return rotation * (vector - pivot) + pivot;
+        }
+
+        public static Vector3 Rotated( Vector3 vector, Vector3 rotation, Vector3 pivot = default(Vector3))
+        {
+            return Rotated(vector, Quaternion.Euler(rotation), pivot);
+        }
+
+        public static Vector3 Rotated( Vector3 vector, float x, float y, float z, Vector3 pivot = default(Vector3))
+        {
+            return Rotated(vector, Quaternion.Euler(x, y, z), pivot);
+        }
+
+        public void RotateRadians(float radians, Vector3 axis)
 		{
 			Rotate(radians* Mathf.Rad2Deg,axis);
 		}
@@ -112,8 +133,14 @@ namespace HD
 			for (int i = 0; i < mesh.vertices.Count; i++)
             {
 				vertices.Add(mesh.vertices[i]);
-				Colors.Add(mesh.Colors[i]);
-			}
+				if (i< mesh.Colors.Count) { 
+					Colors.Add(mesh.Colors[i]);
+                }
+				else
+				{
+                    Colors.Add(Color.white);
+                }
+            }
 			if (uvs!=null&&mesh.UVs!=null){
 				for (int i = 0; i < mesh.vertices.Count; i++)
             	{
