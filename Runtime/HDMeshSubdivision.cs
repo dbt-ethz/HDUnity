@@ -61,6 +61,15 @@ namespace HD
             return new_faces_vertices;
         }
 
+        public static List<Vector3[]> subdivide_face_extrude(HDMesh hdMesh, int[] face, float height, bool capTop=true)
+        {
+
+            Vector3[] face_vertices = HDUtilsVertex.face_vertices(hdMesh, face);
+            List<Vector3[]> new_faces_vertices = subdivide_face_extrude(face_vertices, height, capTop);
+
+            return new_faces_vertices;
+        }
+
     }
 }
 

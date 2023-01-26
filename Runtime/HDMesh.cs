@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using UnityEngine;
 using UnityEngine.UI;
-using static UnityEditor.FilePathAttribute;
+// using static UnityEditor.FilePathAttribute;
 
 namespace HD
 {
@@ -128,24 +128,24 @@ namespace HD
 		}
 
 		public void AddMesh(HDMesh mesh)
-        {
+		{
 			int nV = this.VertexCount();
 			for (int i = 0; i < mesh.vertices.Count; i++)
-            {
+			{
 				vertices.Add(mesh.vertices[i]);
-				if (i< mesh.Colors.Count) { 
+				if (i < mesh.Colors.Count) {
 					Colors.Add(mesh.Colors[i]);
-                }
+				}
 				else
 				{
-                    Colors.Add(Color.white);
-                }
-            }
-			if (uvs!=null&&mesh.UVs!=null){
+					Colors.Add(Color.white);
+				}
+			}
+			if (uvs != null && mesh.UVs != null) {
 				for (int i = 0; i < mesh.vertices.Count; i++)
-            	{
+				{
 					uvs.Add(mesh.UVs[i]);
-				
+
 				}
 			}
 
@@ -154,7 +154,7 @@ namespace HD
 				int[] face = mesh.faces[i];
 				int[] newFace = new int[face.Length];
 				for (int j = 0; j < face.Length; j++)
-                {
+				{
 					newFace[j] = face[j] + nV;
 
 				}
@@ -183,7 +183,6 @@ namespace HD
 		{
 			faces.Add(face);
 		}
-		
 
 		public int AddColor(Color color)
 		{
@@ -283,6 +282,25 @@ namespace HD
 			vs[3] = this.AddVertex(v4, color);
 			faces.Add(vs);
 		}
+
+		public void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
+        {
+			int[] vs = new int[3];
+			vs[0] = this.AddVertex(v1, color);
+			vs[1] = this.AddVertex(v2, color);
+			vs[2] = this.AddVertex(v3, color);
+			faces.Add(vs);
+		}
+
+		public void AddFace(Vector3[] vertices, Color? c = null)
+        {
+			Color color = c ?? Color.white;
+
+			if (vertices.Length == 3) AddTriangle(vertices[0], vertices[1], vertices[2], color);
+			else if (vertices.Length == 4) AddQuad(vertices[0], vertices[1], vertices[2], vertices[3], color);
+			else return;
+		}
+
 		public void AddTri2D(float x1,float y1,float x2,float y2,float x3,float y3)
 		{
 			AddTri2D(x1,y1,x2,y2,x3,y3,0,Color.white);
