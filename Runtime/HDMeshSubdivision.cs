@@ -60,7 +60,6 @@ namespace HD
 
             return new_faces_vertices;
         }
-
         public static List<Vector3[]> subdivide_face_extrude(HDMesh hdMesh, int[] face, float height, bool capTop=true)
         {
 
@@ -69,7 +68,20 @@ namespace HD
 
             return new_faces_vertices;
         }
-         public static List<Vector3[]> subdivide_face_grid(Vector3[] face_vertices, int nU, int nV)
+        public static HDMesh subdivide_mesh_extrude(HDMesh hdMesh, float extrudeHeight)
+        {
+            HDMesh newMesh = new HDMesh();
+            foreach (var face in hdMesh.Faces) //list of index
+            {
+                List<Vector3[]> new_faces_vertices = HDMeshSubdivision.subdivide_face_extrude(hdMesh, face, extrudeHeight);
+                foreach (var face_vertices in new_faces_vertices)
+                {
+                    newMesh.AddFace(face_vertices);
+                }
+            }
+            return newMesh;
+        }
+        public static List<Vector3[]> subdivide_face_grid(Vector3[] face_vertices, int nU, int nV)
         {
             //        """
             //splits a triangle, quad or a rectangle into a regular grid
@@ -90,21 +102,18 @@ namespace HD
                     gridVertices.Add(_vertices_betweem(vsU1[i], vsU2[i], nV));
                 }
 
-                List<Vector3[]> faces = new List<Vector3[]>();
-                for (int u = 0; u < vsU1.Count -1; u++)
+                for (int u = 0; u < vsU1.Count - 1; u++)
                 {
                     List<Vector3> vs1 = gridVertices[u];
-                    List<Vector3> vs2 = gridVertices[u+1];
+                    List<Vector3> vs2 = gridVertices[u + 1];
                     for (int v = 0; v < vs1.Count - 1; v++)
                     {
-                        Vector3[] face = new Vector3[] {vs1[v], vs1[v+1], vs2[v+1], vs2[v]};
-                        // face_copy_properties(face, f) ? color and group 
-                        faces.Add(face);
+                        Vector3[] face = new Vector3[] { vs1[v], vs2[v], vs2[v + 1], vs1[v + 1] };
+                        // TODO face_copy_properties(face, f) ? color and group 
+                        new_faces_vertices.Add(face);
                     }
                 }
-                return faces;
             }
-
             //if len(face.vertices) == 4:
             //    vsU1 = _vertices_between(face.vertices[0], face.vertices[1], nU)
             //    vsU2 = _vertices_between(face.vertices[3], face.vertices[2], nU)
@@ -121,7 +130,38 @@ namespace HD
             //                    utils_face.face_copy_properties(face, f)
             //            faces.append(f)
             //    return faces
+            else if (face_vertices.Length == 3)
+            {
+                List<Vector3> vsU1 = _vertices_betweem(face_vertices[0], face_vertices[1], nU);
+                List<Vector3> vsU2 = _vertices_betweem(face_vertices[0], face_vertices[2], nU);
 
+                List<List<Vector3>> gridVertices = new List<List<Vector3>>();
+                for (int u = 0; u < vsU1.Count; u++)
+                {
+                    gridVertices.Add(_vertices_betweem(vsU1[u], vsU2[u], nV));
+                }
+
+                Vector3 v0 = face_vertices[0];
+                List<Vector3> vs1 = gridVertices[0];
+
+                for (int i = 0; i < vs1.Count - 1; i++)
+                {
+                    Vector3[] face = new Vector3[] { v0, vs1[i], vs1[i + 1] };
+                    // TODO face_copy_properties(face, f) ? color and group 
+                    new_faces_vertices.Add(face);
+                    for (int u = 0; u < gridVertices.Count - 1; u++)
+                    {
+                        vs1 = gridVertices[u];
+                        List<Vector3> vs2 = gridVertices[u + 1];
+                        for (int v = 0; v < vs1.Count - 1; v++)
+                        {
+                            face = new Vector3[] { vs1[v], vs1[v + 1], vs2[v + 1], vs2[v] };
+                            new_faces_vertices.Add(face);
+                        }
+                    }
+                }
+            }
+            return new_faces_vertices;
             //if len(face.vertices) == 3:
             //    vsU1 = _vertices_between(face.vertices[0], face.vertices[1], nU)
             //    vsU2 = _vertices_between(face.vertices[0], face.vertices[2], nU)
@@ -144,11 +184,30 @@ namespace HD
             //                utils_face.face_copy_properties(face, f)
             //            faces.append(f)
             //    return faces
+        }
+        
+        public static List<Vector3[]> subdivide_face_grid(HDMesh hdMesh, int[] face, int nU, int nV)
+        {
+            Vector3[] face_vertices = HDUtilsVertex.face_vertices(hdMesh, face);
+            List<Vector3[]> new_faces_vertices = subdivide_face_grid(face_vertices, nU, nV);
 
             return new_faces_vertices;
         }
 
-        public static List<Vector3> _vertices_betweem(Vector3 v1, Vector3 v2, int n)
+        public static HDMesh subdivide_mesh_grid(HDMesh hdMesh, int nU, int nV)
+        {
+            HDMesh newMesh = new HDMesh();
+            foreach (var face in hdMesh.Faces) //list of index
+            {
+                List<Vector3[]> new_faces_vertices = subdivide_face_grid(hdMesh, face, nU, nV);
+                foreach (var face_vertices in new_faces_vertices)
+                {
+                    newMesh.AddFace(face_vertices);
+                }
+            }
+            return newMesh;
+        }
+        private static List<Vector3> _vertices_betweem(Vector3 v1, Vector3 v2, int n)
         {
             //row = []
             //deltaV = utils_vertex.vertex_subtract(v2, v1)
@@ -160,37 +219,20 @@ namespace HD
             //return row
 
             List<Vector3> rowList = new List<Vector3>();
-            Vector3 deltaV = (v1 - v2)/n;
-
-<<<<<<< Updated upstream
-        public static HDMesh subdivide_mesh_extrude(HDMesh hdMesh, float extrudeHeight)
-        {
-            HDMesh newMesh = new HDMesh();
-            foreach (var face in hdMesh.Faces) //list of index
-            {
-                List<Vector3[]> new_faces_vertices = HDMeshSubdivision.subdivide_face_extrude(hdMesh, face, extrudeHeight);
-                foreach (var face_vertices in new_faces_vertices)
-                {
-                    newMesh.AddFace(face_vertices);
-                }
-            }
-            return newMesh;
-        }
-
-=======
-            for(int i = 0; i < n; i++)
+            Vector3 deltaV = (v2 - v1) / n;
+            for (int i = 0; i < n; i++)
             {
                 Vector3 addV = deltaV * i + v1;
                 rowList.Add(addV);
             }
             rowList.Add(v2);
 
-            //Vector3[] rowArray = rowList.ToArray();
-
             return rowList;
         }
->>>>>>> Stashed changes
+
     }
+
 }
+
 
 

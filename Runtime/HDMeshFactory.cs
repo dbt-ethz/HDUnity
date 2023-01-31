@@ -25,6 +25,24 @@ namespace HD
 			mesh.AddFace(quad);
 		}
 		
+		public static void AddTriangle(HDMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color, bool flip = false)
+        {
+			int[] tri = new int[3];
+            if (!flip)
+            {
+				tri[0] = mesh.AddVertex(x1, y1, z1, color);
+				tri[1] = mesh.AddVertex(x2, y2, z2, color);
+				tri[2] = mesh.AddVertex(x3, y3, z3, color);
+			}
+            else
+            {
+				tri[2] = mesh.AddVertex(x1, y1, z1, color);
+				tri[1] = mesh.AddVertex(x2, y2, z2, color);
+				tri[0] = mesh.AddVertex(x3, y3, z3, color);
+			}
+			mesh.AddFace(tri);
+        }
+
 		public static void AddQuadByLine(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
 		{
 			AddQuad(mesh, a.x, z1, a.y, b.x, z1, b.y, b.x, z2, b.y, a.x, z2, a.y, color, flip);

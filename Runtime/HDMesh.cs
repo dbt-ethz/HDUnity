@@ -301,6 +301,22 @@ namespace HD
 			else return;
 		}
 
+		public void AddFaces(List<Vector3[]> faces_vertices, Color? c = null)
+        {
+			Color color = c ?? Color.white;
+			foreach (var face_vertices in faces_vertices)
+			{
+                try
+                {
+					AddFace(face_vertices);
+				}
+				catch (Exception e)
+                {
+					throw e;
+				}
+			}
+		}
+
 		public void AddTri2D(float x1,float y1,float x2,float y2,float x3,float y3)
 		{
 			AddTri2D(x1,y1,x2,y2,x3,y3,0,Color.white);
