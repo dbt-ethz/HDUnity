@@ -70,6 +70,20 @@ namespace HD
             return new_faces_vertices;
         }
 
+        public static HDMesh subdivide_mesh_extrude(HDMesh hdMesh, float extrudeHeight)
+        {
+            HDMesh newMesh = new HDMesh();
+            foreach (var face in hdMesh.Faces) //list of index
+            {
+                List<Vector3[]> new_faces_vertices = HDMeshSubdivision.subdivide_face_extrude(hdMesh, face, extrudeHeight);
+                foreach (var face_vertices in new_faces_vertices)
+                {
+                    newMesh.AddFace(face_vertices);
+                }
+            }
+            return newMesh;
+        }
+
     }
 }
 
