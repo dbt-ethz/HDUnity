@@ -6,6 +6,28 @@ namespace HD
 {
     public class HDMeshSubdivision : MonoBehaviour
     {
+        private static List<Vector3> _vertices_betweem(Vector3 v1, Vector3 v2, int n)
+        {
+            //row = []
+            //deltaV = utils_vertex.vertex_subtract(v2, v1)
+            //deltaV = utils_vertex.vertex_divide(deltaV, n)
+            //for i in range(n):
+            //    addV = utils_vertex.vertex_scale(deltaV, i)
+            //    row.append(utils_vertex.vertex_add(addV, v1))
+            //row.append(v2)
+            //return row
+
+            List<Vector3> rowList = new List<Vector3>();
+            Vector3 deltaV = (v2 - v1) / n;
+            for (int i = 0; i < n; i++)
+            {
+                Vector3 addV = deltaV * i + v1;
+                rowList.Add(addV);
+            }
+            rowList.Add(v2);
+
+            return rowList;
+        }
         public static List<Vector3[]> subdivide_face_extrude(Vector3[] face_vertices, float height, bool capTop=true)
         {
             //normal = utils_face.face_normal(face)
@@ -33,7 +55,7 @@ namespace HD
             //    utils_face.face_copy_properties(face, new_face)
             //return new_faces
 
-            Vector3 normal = HDUtilsVertex.face_normal(face_vertices);
+            Vector3 normal = HDUtilsFace.face_normal(face_vertices);
             normal *= height;
 
             List<Vector3> new_vertices = new List<Vector3>();
@@ -205,29 +227,7 @@ namespace HD
             }
             return newMesh;
         }
-        private static List<Vector3> _vertices_betweem(Vector3 v1, Vector3 v2, int n)
-        {
-            //row = []
-            //deltaV = utils_vertex.vertex_subtract(v2, v1)
-            //deltaV = utils_vertex.vertex_divide(deltaV, n)
-            //for i in range(n):
-            //    addV = utils_vertex.vertex_scale(deltaV, i)
-            //    row.append(utils_vertex.vertex_add(addV, v1))
-            //row.append(v2)
-            //return row
-
-            List<Vector3> rowList = new List<Vector3>();
-            Vector3 deltaV = (v2 - v1) / n;
-            for (int i = 0; i < n; i++)
-            {
-                Vector3 addV = deltaV * i + v1;
-                rowList.Add(addV);
-            }
-            rowList.Add(v2);
-
-            return rowList;
-        }
-        private static List<Vector3[]> subdivie_face_extrude_tapered(Vector3[] face_vertices, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        public static List<Vector3[]> subdivide_face_extrude_tapered(Vector3[] face_vertices, float height = 0f, float fraction = 0.5f, bool capTop = true)
         {
             //        """
             //Extrudes the face tapered like a window by creating an
@@ -244,11 +244,26 @@ namespace HD
             //   The relative offset distance, 0: original vertex, 1: center point
             //    default 0.5(halfway)
             //"""
+
             //center_vertex = utils_face.face_center(face)
             //normal = utils_face.face_normal(face)
             //scaled_normal = utils_vertex.vertex_scale(normal, height)
 
-            //Vector3 center_vertex = HDUtil
+            Vector3 center_vertex = HDUtilsFace.face_center(face_vertices);
+            Vector3 normal = HDUtilsFace.face_normal(face_vertices);
+            Vector3 scaled_normal = normal * height;
+
+            //# calculate new vertex positions
+            List<Vector3> new_vertices = new List<Vector3>();
+            for(int i = 0; i < face_vertices.Length; i++)
+            {
+                Vector3 n1 = face_vertices[i];
+                Vector3 betw = center_vertex - n1;
+                betw *= fraction;
+                Vector3 nn = n1 + betw;
+                nn += scaled_normal;
+                new_vertices.Add(nn);
+            }
 
             //# calculate new vertex positions
             //        new_vertices = []
@@ -259,6 +274,28 @@ namespace HD
             //    nn = utils_vertex.vertex_add(n1, betw)
             //    nn = utils_vertex.vertex_add(nn, scaled_normal)
             //    new_vertices.append(nn)
+
+            //# create the quads along the edges
+            List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
+            int num = face_vertices.Length;
+            for (int i = 0; i < num; i++)
+            {
+                Vector3 n1 = face_vertices[i];
+                Vector3 n2 = face_vertices[(i + 1) % num];
+                Vector3 n3 = new_vertices[(i + 1) % num];
+                Vector3 n4 = new_vertices[i];
+                Vector3[] new_face_vertices = new Vector3[] { n1, n2, n3, n4 };
+                new_faces_vertices.Add(new_face_vertices);
+            }
+
+            //# create the closing cap face
+            if (capTop)
+            {
+                Vector3[] cap_face_vertices = new_vertices.ToArray();
+                new_faces_vertices.Add(cap_face_vertices);
+            }
+
+            return new_faces_vertices;
 
             //new_faces = []
             //# create the quads along the edges
@@ -279,7 +316,26 @@ namespace HD
             //for new_face in new_faces:
             //    utils_face.face_copy_properties(face, new_face)
             //return new_faces
-            Vector3 normal = HDUtilsVertex.face_normal(face_vertices);
+        }
+        public static List<Vector3[]> subdivide_face_extrude_tapered(HDMesh hdMesh, int[] face, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        {
+            Vector3[] face_vertices = HDUtilsVertex.face_vertices(hdMesh, face);
+            List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(face_vertices, height, fraction, capTop);
+
+            return new_faces_vertices;
+        }
+        public static HDMesh subdivide_mesh_extrude_tapered(HDMesh hdMesh, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        {
+            HDMesh newMesh = new HDMesh();
+            foreach (var face in hdMesh.Faces)
+            {
+                List<Vector3[]> new_faces_vertices = HDMeshSubdivision.subdivide_face_extrude_tapered(hdMesh, face, height, fraction, capTop);
+                foreach (var face_vertices in new_faces_vertices)
+                {
+                    newMesh.AddFace(face_vertices);
+                }
+            }
+            return newMesh;
         }
     }
 
