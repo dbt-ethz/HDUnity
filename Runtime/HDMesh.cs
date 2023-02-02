@@ -417,7 +417,7 @@ namespace HD
 
 
 
-		void UpdateTopology()
+		public void UpdateTopology()
 		{
 			// TODO Auto-generated method stub
 			topoEdges = new List<int[]>();
@@ -475,9 +475,10 @@ namespace HD
 			}
 			int[] edgeVs = new int[] { v1, v2, -1, -1 };
 			topoEdges.Add(edgeVs);
-			AttachEdgeToVertex(v1, topoEdges.Count);
-			AttachEdgeToVertex(v2, topoEdges.Count);
-			return topoEdges.Count - 1;
+			int edgeIndex = topoEdges.Count - 1;
+            AttachEdgeToVertex(v1, edgeIndex);
+			AttachEdgeToVertex(v2, edgeIndex);
+			return edgeIndex;
 		}
 		private int AdjacentEdgeToVertices(int v1, int v2)
 		{
@@ -597,8 +598,11 @@ namespace HD
 		{
 			return topoEdges[edgeIndex][FACE2];
 		}
-
-		public ReadOnlyCollection<int[]> GetTopoVertexEdges()
+        public ReadOnlyCollection<int[]> GetTopoEdges()
+        {
+            return new ReadOnlyCollection<int[]>(topoEdges);
+        }
+        public ReadOnlyCollection<int[]> GetTopoVertexEdges()
 		{
 			return new ReadOnlyCollection<int[]>(topoVertexEdges);
 		}
