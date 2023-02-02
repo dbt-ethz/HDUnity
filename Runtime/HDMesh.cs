@@ -647,5 +647,45 @@ namespace HD
         	mesh.SetColors(this.Colors);
         	mesh.RecalculateNormals();
 		}
+
+		public static void FillUnitySubMeshes(Mesh mesh, List<HDMesh> hdMeshes)
+        {
+			mesh.Clear();
+
+			List<Vector3> vertices = new List<Vector3>();
+			List<Color> colors = new List<Color>();
+			List<int[]> triDex = new List<int[]>();
+
+			foreach(HDMesh hdMesh in hdMeshes)
+            {
+				// add all triangles
+				int[] subTriangles = hdMesh.FlattenedTriangles();
+				for (int i = 0; i < subTriangles.Length; i++)
+				{
+					subTriangles[i] += vertices.Count;
+				}
+				triDex.Add(subTriangles);
+
+				// add all vertices
+				vertices.AddRange(hdMesh.Vertices);
+				
+				//add color
+				colors.AddRange(hdMesh.Colors);
+
+				//TODO add uv
+
+            }
+
+			mesh.vertices = vertices.ToArray();
+            mesh.subMeshCount = hdMeshes.Count;
+            for (int i = 0; i < mesh.subMeshCount; i++)
+            {
+                mesh.SetTriangles(triDex[i], i);
+            }
+
+			mesh.SetColors(colors);
+			mesh.RecalculateNormals();
+
+		}
 	}
 }

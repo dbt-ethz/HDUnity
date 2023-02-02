@@ -185,7 +185,6 @@ namespace HD
             //            faces.append(f)
             //    return faces
         }
-        
         public static List<Vector3[]> subdivide_face_grid(HDMesh hdMesh, int[] face, int nU, int nV)
         {
             Vector3[] face_vertices = HDUtilsVertex.face_vertices(hdMesh, face);
@@ -193,7 +192,6 @@ namespace HD
 
             return new_faces_vertices;
         }
-
         public static HDMesh subdivide_mesh_grid(HDMesh hdMesh, int nU, int nV)
         {
             HDMesh newMesh = new HDMesh();
