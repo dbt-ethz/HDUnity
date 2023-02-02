@@ -227,7 +227,60 @@ namespace HD
 
             return rowList;
         }
+        private static List<Vector3[]> subdivie_face_extrude_tapered(Vector3[] face_vertices, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        {
+            //        """
+            //Extrudes the face tapered like a window by creating an
+            //offset face and quads between every original edge and the
+            //corresponding new edge.
 
+            //Arguments:
+            //----------
+            //face : mola.core.Face
+            //    The face to be extruded
+            //height: float
+            //   The distance of the new face to the original face, default 0
+            //fraction: float
+            //   The relative offset distance, 0: original vertex, 1: center point
+            //    default 0.5(halfway)
+            //"""
+            //center_vertex = utils_face.face_center(face)
+            //normal = utils_face.face_normal(face)
+            //scaled_normal = utils_vertex.vertex_scale(normal, height)
+
+            //Vector3 center_vertex = HDUtil
+
+            //# calculate new vertex positions
+            //        new_vertices = []
+            //for i in range(len(face.vertices)):
+            //    n1 = face.vertices[i]
+            //    betw = utils_vertex.vertex_subtract(center_vertex, n1)
+            //    betw = utils_vertex.vertex_scale(betw, fraction)
+            //    nn = utils_vertex.vertex_add(n1, betw)
+            //    nn = utils_vertex.vertex_add(nn, scaled_normal)
+            //    new_vertices.append(nn)
+
+            //new_faces = []
+            //# create the quads along the edges
+            //num = len(face.vertices)
+            //for i in range(num):
+            //    n1 = face.vertices[i]
+            //    n2 = face.vertices[(i + 1) % num]
+            //    n3 = new_vertices[(i + 1) % num]
+            //    n4 = new_vertices[i]
+            //    new_face = Face([n1, n2, n3, n4])
+            //                new_faces.append(new_face)
+
+            //# create the closing cap face
+            //        if doCap:
+            //    cap_face = Face(new_vertices)
+            //    new_faces.append(cap_face)
+
+            //for new_face in new_faces:
+            //    utils_face.face_copy_properties(face, new_face)
+            //return new_faces
+            Vector3 normal = HDUtilsVertex.face_normal(face_vertices);
+        }
     }
 
 }
