@@ -1,7 +1,7 @@
 {
-    "name": "com.dbt.hdgeom",
+    "name": "com.dbt.mola",
     "version": "1.0.0",
-    "displayName": "HDGeom",
+    "displayName": "Mola",
     "description": "This is an example package",
     "unity": "2022.1",
     "documentationUrl": "https://github.com/dbt-ethz/HDUnity",
