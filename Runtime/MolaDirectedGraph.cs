@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class HDDirectedGraph
+public class MolaDirectedGraph
 {
     List<List<DirectedEdge>> edges;
-    public HDDirectedGraph(int nNodes)
+    public MolaDirectedGraph(int nNodes)
     {
         InitList(nNodes);
     }

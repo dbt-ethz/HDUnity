@@ -5,9 +5,9 @@ using UnityEngine;
 using UnityEngine.UI;
 // using static UnityEditor.FilePathAttribute;
 
-namespace HD
+namespace Mola
 {
-	public class HDMesh
+	public class MolaMesh
 	{
 		List<Vector3> vertices;
 		List<int[]> faces;
@@ -17,28 +17,24 @@ namespace HD
 		private List<int[]> topoEdges;
 		private List<int[]> topoVertexEdges;
 
-
 		static int VERTEX1 = 0;
 		static int VERTEX2 = 1;
 		static int FACE1 = 2;
 		static int FACE2 = 3;
 		//static int NONE = -1;
-
 		public List<Vector2> UVs {get=> uvs; set => uvs= value;}
 		public List<int[]> Faces {get=> faces; set => faces= value;}
 		public List<Vector3> Vertices {get=> vertices; set => vertices= value;}
 		public List<Color> Colors { get => vertexColors; set => vertexColors = value; }
-
-		public HDMesh()
+		public MolaMesh()
 		{
 			this.vertices = new List<Vector3>();
 			this.faces = new List<int[]>();
 			this.Colors = new List<Color>();
 		}
-
-		public HDMesh Copy()
+		public MolaMesh Copy()
         {
-			HDMesh copyMesh = new HDMesh();
+			MolaMesh copyMesh = new MolaMesh();
 			foreach (Vector3 vertex in vertices)
 			{
 				copyMesh.AddVertex(vertex.x,vertex.y,vertex.z);
@@ -56,7 +52,6 @@ namespace HD
 			return copyMesh;
 
 		}
-
 		public void SetVertexColors(Color color)
 		{
 			for (int i = 0; i < vertexColors.Count; i++)
@@ -64,7 +59,6 @@ namespace HD
 				vertexColors[i] = color;
 			}
 		}
-
 		public void Translate(float x,float y,float z)
         {
 			for (int i = 0; i < vertices.Count; i++)
@@ -74,7 +68,6 @@ namespace HD
 
 			}
         }
-
 		public void Scale(float x, float y, float z)
 		{
 			for (int i = 0; i < vertices.Count; i++)
@@ -84,14 +77,10 @@ namespace HD
 
 			}
 		}
-
-		
-
 		public void RotateZ(float radians)
 		{
 			Rotate(radians * Mathf.Rad2Deg, new Vector3(0,0,1));
 		}
-
 		public void Rotate(float degrees, Vector3 axis)
 		{
 			Quaternion quat=Quaternion.AngleAxis(degrees, new Vector3(0,0,1));
@@ -106,28 +95,23 @@ namespace HD
                 
             }
 		}
-
         public static Vector3 Rotated( Vector3 vector, Quaternion rotation, Vector3 pivot = default(Vector3))
         {
             return rotation * (vector - pivot) + pivot;
         }
-
         public static Vector3 Rotated( Vector3 vector, Vector3 rotation, Vector3 pivot = default(Vector3))
         {
             return Rotated(vector, Quaternion.Euler(rotation), pivot);
         }
-
         public static Vector3 Rotated( Vector3 vector, float x, float y, float z, Vector3 pivot = default(Vector3))
         {
             return Rotated(vector, Quaternion.Euler(x, y, z), pivot);
         }
-
         public void RotateRadians(float radians, Vector3 axis)
 		{
 			Rotate(radians* Mathf.Rad2Deg,axis);
 		}
-
-		public void AddMesh(HDMesh mesh)
+		public void AddMesh(MolaMesh mesh)
 		{
 			int nV = this.VertexCount();
 			for (int i = 0; i < mesh.vertices.Count; i++)
@@ -161,7 +145,6 @@ namespace HD
 				faces.Add(newFace);
 			}
 		}
-
 		public int AddVertex(float x, float y, float z)
 		{
 			vertices.Add(new Vector3(x, y, z));
@@ -183,7 +166,6 @@ namespace HD
 		{
 			faces.Add(face);
 		}
-
 		public int AddColor(Color color)
 		{
 			this.Colors.Add(color);
@@ -236,7 +218,6 @@ namespace HD
 		{
 			return faces.Count;
 		}
-
 		public void AddTriangle(int index1, int index2, int index3)
 		{
 			faces.Add(new int[] { index1, index2, index3 });
@@ -245,7 +226,6 @@ namespace HD
 		{
 			faces.Add(new int[] { index1, index2, index3, index4 });
 		}
-
 		public void FlipFaces()
 		{
 			for (int i = 0; i < faces.Count; i++)
@@ -282,7 +262,6 @@ namespace HD
 			vs[3] = this.AddVertex(v4, color);
 			faces.Add(vs);
 		}
-
 		public void AddTriangle(Vector3 v1, Vector3 v2, Vector3 v3, Color color)
         {
 			int[] vs = new int[3];
@@ -291,7 +270,6 @@ namespace HD
 			vs[2] = this.AddVertex(v3, color);
 			faces.Add(vs);
 		}
-
 		public void AddFace(Vector3[] vertices, Color? c = null)
         {
 			Color color = c ?? Color.white;
@@ -300,7 +278,6 @@ namespace HD
 			else if (vertices.Length == 4) AddQuad(vertices[0], vertices[1], vertices[2], vertices[3], color);
 			else return;
 		}
-
 		public void AddFaces(List<Vector3[]> faces_vertices, Color? c = null)
         {
 			Color color = c ?? Color.white;
@@ -316,7 +293,6 @@ namespace HD
 				}
 			}
 		}
-
 		public void AddTri2D(float x1,float y1,float x2,float y2,float x3,float y3)
 		{
 			AddTri2D(x1,y1,x2,y2,x3,y3,0,Color.white);
@@ -334,7 +310,6 @@ namespace HD
 			vs[2] = this.AddVertex(x3, y3, z, color);
 			faces.Add(vs);
 		}
-
 		public void AddTriangle(float x1, float y1,float z1, float x2, float y2,float z2, float x3, float y3, float z3, Color color1, Color color2, Color color3)
 		{
 			int[] vs = new int[3];
@@ -351,8 +326,6 @@ namespace HD
 			vs[2] = this.AddVertex(x3, y3, z, color3);
 			faces.Add(vs);
 		}
-
-
 		public void AddQuad2D(float x1, float y1, float x2, float y2, float x3, float y3,float x4,float y4, float z , Color color)
 		{
 			int[] vs = new int[4];
@@ -362,8 +335,6 @@ namespace HD
 			vs[3] = this.AddVertex(x4, y4, z, color);
 			faces.Add(vs);
 		}
-
-
 		public void SeparateVerticesWithUVs()
 		{
 			List<Vector3> oldVertices = new List<Vector3>(vertices);
@@ -385,7 +356,6 @@ namespace HD
 				}
 			}
 		}
-
 		public void SeparateVertices()
 		{
 			List<Vector3> oldVertices = new List<Vector3>(vertices);
@@ -447,10 +417,6 @@ namespace HD
 			}
 			return indices;
 		}
-
-
-
-
 		public void UpdateTopology()
 		{
 			// TODO Auto-generated method stub
@@ -474,7 +440,6 @@ namespace HD
 				}
 			}
 		}
-
 		private void AttachEdgeToVertex(int vertexIndex, int edgeIndex)
 		{
 			int[] edges = topoVertexEdges[vertexIndex];
@@ -486,7 +451,6 @@ namespace HD
 			newEdges[edges.Length] = edgeIndex;
 			topoVertexEdges[vertexIndex] = newEdges;
 		}
-
 		private void AttachFaceToEdge(int edgeIndex, int vertexIndex, int faceIndex)
 		{
 			int[] edge = topoEdges[edgeIndex];
@@ -499,7 +463,6 @@ namespace HD
 				edge[FACE2] = faceIndex;
 			}
 		}
-
 		private int AddEdge(int v1, int v2)
 		{
 			int existingEdge = AdjacentEdgeToVertices(v1, v2);
@@ -615,7 +578,6 @@ namespace HD
 
 			return nbEdges;
 		}
-
 		private int AdjacentVertex1ToEdge(int edgeIndex)
 		{
 			return topoEdges[edgeIndex][VERTEX1];
@@ -640,7 +602,6 @@ namespace HD
 		{
 			return new ReadOnlyCollection<int[]>(topoVertexEdges);
 		}
-
 		public void FillUnityMesh(Mesh mesh){
 			mesh.Clear();
         	mesh.vertices = this.VertexArray();
@@ -651,8 +612,7 @@ namespace HD
         	mesh.SetColors(this.Colors);
         	mesh.RecalculateNormals();
 		}
-
-		public static void FillUnitySubMeshes(Mesh mesh, List<HDMesh> hdMeshes)
+		public static void FillUnitySubMeshes(Mesh mesh, List<MolaMesh> molaMeshes)
         {
 			mesh.Clear();
 
@@ -660,10 +620,10 @@ namespace HD
 			List<Color> colors = new List<Color>();
 			List<int[]> triDex = new List<int[]>();
 
-			foreach(HDMesh hdMesh in hdMeshes)
+			foreach(MolaMesh molaMesh in molaMeshes)
             {
 				// add all triangles
-				int[] subTriangles = hdMesh.FlattenedTriangles();
+				int[] subTriangles = molaMesh.FlattenedTriangles();
 				for (int i = 0; i < subTriangles.Length; i++)
 				{
 					subTriangles[i] += vertices.Count;
@@ -671,17 +631,17 @@ namespace HD
 				triDex.Add(subTriangles);
 
 				// add all vertices
-				vertices.AddRange(hdMesh.Vertices);
+				vertices.AddRange(molaMesh.Vertices);
 				
 				//add color
-				colors.AddRange(hdMesh.Colors);
+				colors.AddRange(molaMesh.Colors);
 
 				//TODO add uv
 
             }
 
 			mesh.vertices = vertices.ToArray();
-            mesh.subMeshCount = hdMeshes.Count;
+            mesh.subMeshCount = molaMeshes.Count;
             for (int i = 0; i < mesh.subMeshCount; i++)
             {
                 mesh.SetTriangles(triDex[i], i);

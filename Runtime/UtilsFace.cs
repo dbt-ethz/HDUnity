@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace HD
+namespace Mola
 {
-    public class HDUtilsFace : MonoBehaviour
+    public class UtilsFace
     {
 
         public static Vector3 face_normal(Vector3[] face_vertices)
@@ -44,12 +44,12 @@ namespace HD
         public static Vector3 face_center(Vector3[] face_vertices)
         {
             List<Vector3> vertices_list = new List<Vector3>(face_vertices);
-            return HDUtilsVertex.vertices_list_center(vertices_list);
+            return UtilsVertex.vertices_list_center(vertices_list);
         }
 
-        public static Vector3 face_center(HDMesh hdMesh, int[] face)
+        public static Vector3 face_center(MolaMesh molaMesh, int[] face)
         {
-            Vector3[] face_vertices = HDUtilsVertex.face_vertices(hdMesh, face);
+            Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
             return face_center(face_vertices);
         }
     }

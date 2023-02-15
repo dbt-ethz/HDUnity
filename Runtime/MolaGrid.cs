@@ -3,11 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace HD
+namespace Mola
 {
-    public class HDGrid<T> : IEnumerable
+    public class MolaGrid<T> : IEnumerable
     {
-        public HDGrid(int nX, int nY, int nZ)
+        public MolaGrid(int nX, int nY, int nZ)
         {
             this.NX = nX;
             this.NY = nY;

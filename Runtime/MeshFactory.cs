@@ -1,12 +1,12 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-namespace HD
+namespace Mola
 {
-	public class HDMeshFactory
+	public class MeshFactory
 	{
 
-        public static void AddQuad(HDMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color color , bool flip = false)
+        public static void AddQuad(MolaMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4, Color color , bool flip = false)
         {
 			int[] quad = new int[4];
 			if (!flip) {
@@ -24,8 +24,7 @@ namespace HD
 			}
 			mesh.AddFace(quad);
 		}
-		
-		public static void AddTriangle(HDMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color, bool flip = false)
+		public static void AddTriangle(MolaMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, Color color, bool flip = false)
         {
 			int[] tri = new int[3];
             if (!flip)
@@ -42,34 +41,29 @@ namespace HD
 			}
 			mesh.AddFace(tri);
         }
-
-		public static void AddQuadByLine(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
+		public static void AddQuadByLine(MolaMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
 		{
 			AddQuad(mesh, a.x, z1, a.y, b.x, z1, b.y, b.x, z2, b.y, a.x, z2, a.y, color, flip);
 		}
-		public static void AddQuadXY(HDMesh mesh, float x1, float y1,  float x2, float y2, float z,  Color color, bool flip)
+		public static void AddQuadXY(MolaMesh mesh, float x1, float y1,  float x2, float y2, float z,  Color color, bool flip)
 		{
 
 			AddQuad(mesh,x1,y1,z,x1,y2,z,x2,y2,z, x2, y1, z,color,flip);
 		}
-
-        public static void AddQuadXY(HDMesh mesh, Vector2[] vs, float z, Color color, bool flip)
+        public static void AddQuadXY(MolaMesh mesh, Vector2[] vs, float z, Color color, bool flip)
 		{
 
 			AddQuad(mesh, vs[0].x, z, vs[0].y, vs[1].x, z, vs[1].y, vs[2].x, z, vs[2].y, vs[3].x, z, vs[3].y, color, flip);
 		}
-
-
-		public static void AddQuadXZ(HDMesh mesh, float x1, float z1, float x2, float z2, float y, Color color, bool flip)
+		public static void AddQuadXZ(MolaMesh mesh, float x1, float z1, float x2, float z2, float y, Color color, bool flip)
 		{
 			AddQuad(mesh, x1, y, z1, x1, y, z2, x2, y, z2, x2, y, z1, color, flip);
 		}
-		public static void AddQuadYZ(HDMesh mesh, float y1, float z1, float y2, float z2, float x, Color color, bool flip)
+		public static void AddQuadYZ(MolaMesh mesh, float y1, float z1, float y2, float z2, float x, Color color, bool flip)
 		{
 			AddQuad(mesh, x, y1, z1, x, y1, z2, x, y2, z2, x, y2, z1, color, flip);
 		}
-
-		public static void AddBox(HDMesh mesh,float x1,float y1,float z1,float x2,float y2,float z2,Color color)
+		public static void AddBox(MolaMesh mesh,float x1,float y1,float z1,float x2,float y2,float z2,Color color)
         {
 			int[] v = new int[8];
 			v[0] = mesh.AddVertex(x1, y1, z1, color);
@@ -82,20 +76,18 @@ namespace HD
 			v[7] = mesh.AddVertex(x2, y1, z2, color);
 			AddBoxQuads(mesh, v);
 		}
-
-		public static HDMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color color)
+		public static MolaMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color color)
         {
 
-			HDMesh mesh = new HDMesh();
+			MolaMesh mesh = new MolaMesh();
 			AddBox(mesh, x1, y1, z1, x2, y2, z2, color);
 			return mesh;
 
 		}
-
-		public static HDMesh createGridMesh(IList<Vector3>vertices, int nU,int nV,bool uClosed)
+		public static MolaMesh createGridMesh(IList<Vector3>vertices, int nU,int nV,bool uClosed)
         {
 
-			HDMesh mesh = new HDMesh();
+			MolaMesh mesh = new MolaMesh();
 			mesh.Vertices=new List<Vector3>(vertices);
 			if (!uClosed){
 			for (int u=0;u<nU-1;u++){
@@ -126,7 +118,7 @@ namespace HD
 			return mesh;
 
 		}
-		private static void AddBoxQuads(HDMesh mesh, int[] v)
+		private static void AddBoxQuads(MolaMesh mesh, int[] v)
         {
 			mesh.AddQuad(v[0], v[1], v[2], v[3]);
 			mesh.AddQuad(v[7], v[6], v[5], v[4]);
@@ -138,7 +130,7 @@ namespace HD
 				mesh.AddQuad(v[i3], v[i2], v[i1], v[i0]);
 			}
 		}
-		public static void ExtrudeQuadYtoZ(HDMesh mesh,IList<Vector2> bounds, float y1,float y2,Color color)
+		public static void ExtrudeQuadYtoZ(MolaMesh mesh,IList<Vector2> bounds, float y1,float y2,Color color)
         {
 			int[] v = new int[8];
 			for (int i = 0; i < bounds.Count; i++)
@@ -155,9 +147,7 @@ namespace HD
 			}
 			AddBoxQuads(mesh,v);
 		}
-
-
-		public static void AddQuadX0(HDMesh mesh, int x, int y, int z, Color color)
+		public static void AddQuadX0(MolaMesh mesh, int x, int y, int z, Color color)
 		{
 			int x0 = x;
 			int y0 = y;
@@ -171,7 +161,7 @@ namespace HD
 			quadX0[0] = mesh.AddVertex(x0, y0, z1, color);
 			mesh.AddFace(quadX0);
 		}
-		public static void AddQuadX1(HDMesh mesh, int x, int y, int z, Color color)
+		public static void AddQuadX1(MolaMesh mesh, int x, int y, int z, Color color)
 		{
 			int x1 = x + 1;
 			int y0 = y;
@@ -185,7 +175,7 @@ namespace HD
 			quadX1[3] = mesh.AddVertex(x1, y0, z1, color);
 			mesh.AddFace(quadX1);
 		}
-		public static void AddQuadY1(HDMesh mesh, int x, int y, int z, Color color)
+		public static void AddQuadY1(MolaMesh mesh, int x, int y, int z, Color color)
 		{
 			int x0 = x;
 			int x1 = x + 1;
@@ -199,7 +189,7 @@ namespace HD
 			quadY1[0] = mesh.AddVertex(x0, y1, z1, color);
 			mesh.AddFace(quadY1);
 		}
-		public static void AddQuadY0(HDMesh mesh, int x, int y, int z, Color color,bool flip=false)
+		public static void AddQuadY0(MolaMesh mesh, int x, int y, int z, Color color,bool flip=false)
 		{
 			int x0 = x;
 			int x1 = x + 1;
@@ -224,8 +214,7 @@ namespace HD
             
 			mesh.AddFace(quadY0);
 		}
-
-		public static void AddQuadZ1(HDMesh mesh, int x, int y, int z, Color color)
+		public static void AddQuadZ1(MolaMesh mesh, int x, int y, int z, Color color)
 		{
 			int x0 = x;
 			int x1 = x + 1;
@@ -239,7 +228,7 @@ namespace HD
 			quadZ1[3] = mesh.AddVertex(x0, y1, z1, color);
 			mesh.AddFace(quadZ1);
 		}
-		public static void AddQuadZ0(HDMesh mesh, int x, int y, int z, Color color)
+		public static void AddQuadZ0(MolaMesh mesh, int x, int y, int z, Color color)
 		{
 			int x0 = x;
 			int x1 = x + 1;
@@ -253,8 +242,44 @@ namespace HD
 			quadZ0[0] = mesh.AddVertex(x0, y1, z0, color);
 			mesh.AddFace(quadZ0);
 		}
-		
+		public static MolaMesh getCone(Vector3 a, Vector3 b, int segments, float radius1, float radius2)
+		{
+			List<Vector3> profile1 = UtilsVertex.getCircle(a.x, a.y, radius1, segments, a.z);
+			List<Vector3> profile2 = UtilsVertex.getCircle(b.x, b.y, radius1, segments, b.z);
+			MolaMesh mesh = new MolaMesh();
+			mesh.Vertices.AddRange(profile1);
+			mesh.Vertices.AddRange(profile2);
+			mesh.AddVertex(a.x, a.y, a.z);
+			mesh.AddVertex(b.x, b.y, b.z);
+			for (int i = 0; i < segments; i++)
+			{
+				int i2 = (i + 1) % segments;
+				int i3 = i + segments;
+				int i4 = i2 + segments;
+				mesh.AddQuad(i2, i, i3, i4);
+			}
+			// base;
+			int iCenter = segments * 2;
+			for (int i = 0; i < segments; i++)
+			{
+				int i2 = (i + 1) % segments;
+				mesh.AddTriangle(i, i2, iCenter);
+			}
+			//top
+			iCenter = segments * 2 + 1;
+			for (int i = 0; i < segments; i++)
+			{
+				int i2 = (i + 1) % segments + segments;
+				mesh.AddTriangle(i + segments, iCenter, i2);
+			}
+			return mesh;
+		}
+		public static MolaMesh getTube(Vector3 a, Vector3 b, int segments, float radius)
+		{
+			List<Vector3> profile = UtilsVertex.getCircle(0, 0, radius, segments);
 
+			return MeshPiping.PipeLineWithConvexProfile(a, b, profile, new Vector3(0, 1, 0), false, false);
+		}
 
 	}
 }

@@ -2,13 +2,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 
-namespace HD
+namespace Mola
 {
     public class MarchingSquare
     {
-        public static HDMesh MarchingSquares(float[][] field, Color[][] colors, float iso, float z = 0)
+        public static MolaMesh MarchingSquares(float[][] field, Color[][] colors, float iso, float z = 0)
         {
-            HDMesh mesh = new HDMesh();
+            MolaMesh mesh = new MolaMesh();
             //Marching Squares isolines
             int cols = field.Length;
             int rows = field[0].Length;
@@ -230,9 +230,9 @@ namespace HD
             return mesh;
         }
 
-        public static HDMesh MarchingSquares(float[][] field, float iso, float z = 0)
+        public static MolaMesh MarchingSquares(float[][] field, float iso, float z = 0)
         {
-            HDMesh mesh = new HDMesh();
+            MolaMesh mesh = new MolaMesh();
             //Marching Squares isolines
             int cols = field.Length;
             int rows = field[0].Length;
@@ -378,7 +378,7 @@ namespace HD
 
         public static List<Vector2> MarchingContours(float[][] field, float iso)
         {
-            HDMesh mesh = new HDMesh();
+            MolaMesh mesh = new MolaMesh();
             //Marching Squares isolines
             int cols = field.Length;
             int rows = field[0].Length;
@@ -521,7 +521,7 @@ namespace HD
 
         public static List<Vector2> MarchingContoursBorders(float[][] field, float iso)
         {
-            HDMesh mesh = new HDMesh();
+            MolaMesh mesh = new MolaMesh();
             //Marching Squares isolines
             int cols = field.Length;
             int rows = field[0].Length;

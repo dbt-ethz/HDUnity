@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HDDirectedGraph;
+using static MolaDirectedGraph;
 
 public class Geom2D
 	

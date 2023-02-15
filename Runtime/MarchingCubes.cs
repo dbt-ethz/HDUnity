@@ -1,9 +1,7 @@
 using System.Collections.Generic;
 using System;
 
-
-
-namespace HD
+namespace Mola
 {
     public class MarchingCube
     {
@@ -33,9 +31,9 @@ namespace HD
         }
 
 
-        public static HDMesh MarchingCubesMesh(int nX, int nY, int nZ, List<double> values, float iso, float x1, float y1, float z1, float x2, float y2, float z2)
+        public static MolaMesh MarchingCubesMesh(int nX, int nY, int nZ, List<double> values, float iso, float x1, float y1, float z1, float x2, float y2, float z2)
         {
-            HDMesh mesh = new HDMesh();
+            MolaMesh mesh = new MolaMesh();
             float dimX = (x2 - x1) / (nX - 1);
             float dimY = (y2 - y1) / (nY - 1);
             float dimZ = (z2 - z1) / (nZ - 1);

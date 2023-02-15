@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace HD { 
-public class HDCameraOrbit : MonoBehaviour
+namespace Mola { 
+public class CameraOrbit : MonoBehaviour
 {
     protected Transform _XForm_Camera;
     protected Transform _XForm_Parent;

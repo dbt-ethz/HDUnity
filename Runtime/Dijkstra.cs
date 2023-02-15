@@ -2,12 +2,12 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static HDDirectedGraph;
+using static MolaDirectedGraph;
 
 public class Dijkstra 
 {
    
-    public float[] DistanceToAll(HDDirectedGraph graph, int start)
+    public float[] DistanceToAll(MolaDirectedGraph graph, int start)
     {
         float[] distances = new float[graph.NodesCount()];
         int[] candidates = new int[graph.NodesCount()];
