@@ -108,5 +108,4 @@ namespace Mola
             mesh.RecalculateNormals();
         }
     }
-    
 }

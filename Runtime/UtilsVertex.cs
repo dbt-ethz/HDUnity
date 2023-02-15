@@ -176,8 +176,6 @@ namespace Mola
             float vnvp = Vector3.Distance(vNext, vPrevious);
             return (float)Math.Acos((vvn * vvn + vvp * vvp - vnvp * vnvp) / (2 * vvn * vvp));
         }
-
     }
-
 }
 
