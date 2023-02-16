@@ -145,9 +145,10 @@ namespace Mola
 				faces.Add(newFace);
 			}
 		}
-		public int AddVertex(float x, float y, float z)
+		public int AddVertex(float x, float y, float z, Color ? c = null)
 		{
 			vertices.Add(new Vector3(x, y, z));
+			Colors.Add(c ?? Color.white);
 			return vertices.Count - 1;
 		}
 		public int AddVertex(Vector3 v,Color color)
