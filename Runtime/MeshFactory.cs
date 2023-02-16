@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 namespace Mola
@@ -205,7 +206,7 @@ namespace Mola
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		public static MolaMesh creatSingleFace(List<Vector3> vertices)
+		public static MolaMesh createSingleFace(List<Vector3> vertices)
         {
 			MolaMesh mesh = new MolaMesh();
 			mesh.AddFace(vertices.ToArray());
@@ -220,8 +221,9 @@ namespace Mola
 		/// <param name="radius1"></param>
 		/// <param name="radius2"></param>
 		/// <returns></returns>
-		public static MolaMesh creatCone(Vector3 a, Vector3 b, int segments, float radius1, float radius2)
+		public static MolaMesh createCone(Vector3 a, Vector3 b, int segments, float radius1, float radius2, bool capTop=true, bool capBottom=true, Color ? color=null)
 		{
+			//TODO for now top and bottom circle are on XY plane.
 			List<Vector3> profile1 = UtilsVertex.getCircle(a.x, a.y, radius1, segments, a.z);
 			List<Vector3> profile2 = UtilsVertex.getCircle(b.x, b.y, radius1, segments, b.z);
 			MolaMesh mesh = new MolaMesh();
@@ -229,30 +231,42 @@ namespace Mola
 			mesh.Vertices.AddRange(profile2);
 			mesh.AddVertex(a.x, a.y, a.z);
 			mesh.AddVertex(b.x, b.y, b.z);
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
 			for (int i = 0; i < segments; i++)
 			{
 				int i2 = (i + 1) % segments;
 				int i3 = i + segments;
 				int i4 = i2 + segments;
-				mesh.AddQuad(i2, i, i3, i4);
+				//mesh.AddQuad(i2, i, i3, i4);
+				mesh.AddQuad(i4, i3, i, i2);
 			}
-			// base;
-			int iCenter = segments * 2;
-			for (int i = 0; i < segments; i++)
-			{
-				int i2 = (i + 1) % segments;
-				mesh.AddTriangle(i, i2, iCenter);
+            // base;
+            if (capBottom)
+            {
+				int iCenter = segments * 2;
+				for (int i = 0; i < segments; i++)
+				{
+					int i2 = (i + 1) % segments;
+					//mesh.AddTriangle(i, i2, iCenter);
+					mesh.AddTriangle(iCenter, i2, i);
+				}
 			}
 			//top
-			iCenter = segments * 2 + 1;
-			for (int i = 0; i < segments; i++)
-			{
-				int i2 = (i + 1) % segments + segments;
-				mesh.AddTriangle(i + segments, iCenter, i2);
+			if (capTop)
+            {
+				int iCenter = segments * 2 + 1;
+				for (int i = 0; i < segments; i++)
+				{
+					int i2 = (i + 1) % segments + segments;
+					//mesh.AddTriangle(i + segments, iCenter, i2);
+					mesh.AddTriangle(i2, iCenter, i + segments);
+				}
 			}
 			return mesh;
 		}
-		public static MolaMesh creatTube(Vector3 a, Vector3 b, int segments, float radius)
+		public static MolaMesh createTube(Vector3 a, Vector3 b, int segments, float radius)
 		{
 			List<Vector3> profile = UtilsVertex.getCircle(0, 0, radius, segments);
 
@@ -325,7 +339,7 @@ namespace Mola
 		/// <param name="cy"></param>
 		/// <param name="cz"></param>
 		/// <returns></returns>
-		public static MolaMesh createIcosahedron(float radius=1, float cx=0, float cy=0, float cz=0)
+		public static MolaMesh createIcosahedron(float radius=1, float cx=0, float cy=0, float cz=0, Color ? color=null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float phi = (float)(1 + Math.Pow(5, 0.5)) / 2;
@@ -347,7 +361,9 @@ namespace Mola
 				new Vector3(0, coordA, coordB)
 			};
 
-			for(int i = 0; i < mesh.VertexCount(); i++)
+			mesh.Colors = Enumerable.Repeat(color?? Color.white, mesh.VertexCount()).ToList();
+
+			for (int i = 0; i < mesh.VertexCount(); i++)
             {
 				mesh.Vertices[i] *= radius;
 				mesh.Vertices[i] += new Vector3(cx, cy, cz);
@@ -361,8 +377,218 @@ namespace Mola
 				faces.Add(new int[] {indices[i], indices[i + 1], indices[i + 2]});
 			}
 			mesh.Faces = faces;
+			mesh.UpdateTopology();
 
 			return mesh;
+		}
+		/// <summary>
+		/// Constructs a uv sphere mesh.
+		/// </summary>
+		/// <returns></returns>
+		public static MolaMesh createSphere(float radius= 1, float cx= 0, float cy= 0, float cz= 0, int u_res= 10, int v_res= 10, Color? color = null)
+        {
+			MolaMesh mesh = new MolaMesh();
+			for(int v = 0; v < v_res + 1; v++)
+            {
+				float theta = (float)Math.PI * ((float)v / (float)v_res);
+				for(int u = 0; u < u_res; u++)
+                {
+					float phi = (float)(2 * Math.PI * ((float)u / (float)u_res));
+					List<float> cartesian = _polar_to_cartesian(radius, theta, phi);
+					mesh.AddVertex(cartesian[0] + cx, cartesian[1] + cy, cartesian[2] + cz);
+                } 
+            }
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
+			// # work around weld_vertices problem
+			int v_top = 0;
+			int v_bottom = v_res * u_res + u_res - 1;
+
+			for(int v = 0; v < v_res; v++)
+            {
+				for(int u = 0; u < u_res; u++)
+                {
+					int v0 = v * u_res + u;
+					int v1 = (v + 1) * u_res + u;
+					int v2 = (v + 1) * u_res + (u + 1) % u_res;
+					int v3 = v * u_res + (u + 1) % u_res;
+
+					if (v == 0) mesh.AddFace(new int[] { v_top, v1, v2 });
+					else if (v == v_res - 1) mesh.AddFace(new int[] { v0, v_bottom, v3});
+					else mesh.AddFace(new int[] { v0, v1, v2, v3 });
+
+				}
+            }
+			mesh.UpdateTopology();
+
+			return mesh;
+		}
+		private static List<float> _polar_to_cartesian(float r, float theta, float phi)
+        {
+			return new List<float>() { 
+				(float)(r * Math.Sin(theta) * Math.Cos(phi)), 
+				(float)(r * Math.Sin(theta) * Math.Sin(phi)), 
+				(float)(r * Math.Cos(theta))
+			};
+        }
+		/// <summary>
+		/// Constructs a dodecaheron mesh.
+		/// </summary>
+		/// <param name="radius"></param>
+		/// <param name="cx"></param>
+		/// <param name="cy"></param>
+		/// <param name="cz"></param>
+		/// <returns></returns>
+		public static MolaMesh createDodecahedron(float radius= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
+        {
+			MolaMesh mesh = new MolaMesh();
+			float phi = (float)(1 + Math.Pow(5, 0.5)) / 2;
+			mesh.Vertices = new List<Vector3>() {
+				new Vector3(1, 1, 1),
+				new Vector3(1, 1, -1),
+				new Vector3(1, -1, 1),
+				new Vector3(1, -1, -1),
+				new Vector3(-1, 1, 1),
+				new Vector3(-1, 1, -1),
+				new Vector3(-1, -1, 1),
+				new Vector3(-1, -1, -1),
+				new Vector3(0, -phi, -1 / phi),
+				new Vector3(0, -phi, 1 / phi),
+				new Vector3(0, phi, -1 / phi),
+				new Vector3(0, phi, 1 / phi),
+				new Vector3(-phi, -1 / phi, 0),
+				new Vector3(-phi, 1 / phi, 0),
+				new Vector3(phi, -1 / phi, 0),
+				new Vector3(phi, 1 / phi, 0),
+				new Vector3(-1 / phi, 0, -phi),
+				new Vector3(1 / phi, 0, -phi),
+				new Vector3(-1 / phi, 0, phi),
+				new Vector3(1 / phi, 0, phi)
+			};
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
+			for(int i = 0; i < mesh.VertexCount(); i++)
+            {
+				mesh.Vertices[i] *= radius;
+				mesh.Vertices[i] += new Vector3(cx, cy, cz);
+            }
+
+			List<int> indices = new List<int>()
+			{
+				2, 9, 6, 18, 19,
+				4, 11, 0, 19, 18,
+				18, 6, 12, 13, 4,
+				19, 0, 15, 14, 2,
+				4, 13, 5, 10, 11,
+				14, 15, 1, 17, 3,
+				1, 15, 0, 11, 10,
+				3, 17, 16, 7, 8,
+				2, 14, 3, 8, 9,
+				6, 9, 8, 7, 12,
+				1, 10, 5, 16, 17,
+				12, 7, 16, 5, 13
+			};
+			List<int[]> faces = new List<int[]>();
+
+			for (int i = 0; i < indices.Count; i += 5)
+            {
+				int[] poly_face = new int[] { indices[i], indices[i+1], indices[i+2], indices[i+3], indices[i+4]};
+				Vector3[] poly_face_vertices = UtilsVertex.face_vertices(mesh, poly_face);
+				Vector3 center_vertex = UtilsVertex.vertices_list_center(poly_face_vertices.ToList());
+				int center = mesh.AddVertex(center_vertex, color ?? Color.white);
+
+				for(int j = 0; j < poly_face.Length; j++)
+                {
+					int[] face = new int[3] { center, poly_face[(j+1)%poly_face.Length], poly_face[j], };
+					faces.Add(face);
+                }
+            }
+			mesh.Faces = faces;
+			mesh.UpdateTopology();
+
+			return mesh;
+		}
+		/// <summary>
+		/// Constructs a tetrahedron mesh.
+		/// </summary>
+		/// <returns></returns>
+		public static MolaMesh createTetrahedron(float size= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
+        {
+			MolaMesh mesh = new MolaMesh();
+			float coord = (float)(1 / Math.Sqrt(2));
+			mesh.Vertices = new List<Vector3>()
+			{
+				new Vector3(+1, 0, -coord),
+				new Vector3(-1, 0, -coord),
+				new Vector3(0, +1, +coord),
+				new Vector3(0, -1, +coord)
+			};
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
+			for(int i = 0; i < mesh.VertexCount(); i++)
+            {
+				mesh.Vertices[i] *= size / 2;
+				mesh.Vertices[i] += new Vector3(cx, cy, cz);
+            }
+
+			int[] f0 = new int[] { 0, 1, 2};
+			int[] f1 = new int[] { 1, 0, 3};
+			int[] f2 = new int[] { 2, 3, 0};
+			int[] f3 = new int[] { 3, 2, 1};
+
+			mesh.Faces = new List<int[]>() { f0, f1, f2, f3 };
+			mesh.UpdateTopology();
+
+			return mesh;
+		}
+		/// <summary>
+		/// Constructs a torus mesh.
+		/// </summary>
+		/// <returns></returns>
+		public static MolaMesh createTorus(float ringRadius, float tubeRadius, int ringN = 16, int tubeN = 16, Color ? color=null)
+        {
+			MolaMesh mesh = new MolaMesh();
+			float theta = (float)(2 * Math.PI / (float)ringN);
+			float phi = (float)(2 * Math.PI / (float)tubeN);
+
+			for(int i = 0; i < ringN; i++)
+            {
+				for(int j = 0; j < tubeN; j++)
+                {
+					mesh.AddVertex(_torus_vertex(ringRadius, tubeRadius, phi * j, theta * i), color ?? Color.white);
+                }
+            }
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
+			for (int i = 0; i < ringN; i++)
+            {
+				int ii = (i + 1) % ringN;
+				for (int j = 0; j < tubeN; j++)
+                {
+					int jj = (j + 1) % tubeN;
+					int a = i * tubeN + j;
+					int b = ii * tubeN + j;
+					int c = ii * tubeN + jj;
+					int d = i * tubeN + jj;
+
+					int[] face = new int[] { a, b, c, d };
+					mesh.AddFace(face);
+				}
+			}
+			mesh.UpdateTopology();
+
+			return mesh;
+		}
+		private static Vector3 _torus_vertex(float ringR, float tubeR, float ph, float th)
+        {
+			float x = (float)(Math.Cos(th) * (ringR + tubeR * Math.Cos(ph)));
+			float y = (float)(Math.Sin(th) * (ringR + tubeR * Math.Cos(ph)));
+			float z = (float)(tubeR * Math.Sin(ph));
+
+			return new Vector3(x, y, z);
 		}
 	}
 }

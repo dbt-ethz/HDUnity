@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Collections.ObjectModel;
+using System;
 
 namespace Mola
 {
@@ -52,6 +53,7 @@ namespace Mola
                 {
                     newFace[j] = face[face.Length - j - 1] + nVertices;
                 }
+                Array.Reverse(newFace);
                 mesh.AddFace(newFace);
             }
 
@@ -73,6 +75,7 @@ namespace Mola
                             face[2] = edge[1];
                             face[1] = edge[1] + nVertices;
                             face[0] = edge[0] + nVertices;
+                            Array.Reverse(face);
                             mesh.AddFace(face);
                         }
 
