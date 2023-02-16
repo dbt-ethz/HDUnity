@@ -283,11 +283,11 @@ namespace Mola
 		/// <param name="z2"></param>
 		/// <param name="color"></param>
 		/// <returns></returns>
-		public static MolaMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color color)
+		public static MolaMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color ? color=null)
 		{
 
 			MolaMesh mesh = new MolaMesh();
-			AddBox(mesh, x1, y1, z1, x2, y2, z2, color);
+			AddBox(mesh, x1, y1, z1, x2, y2, z2, color ?? Color.white);
 			return mesh;
 
 		}
