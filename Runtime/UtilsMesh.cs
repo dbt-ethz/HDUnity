@@ -44,7 +44,7 @@ namespace Mola
                 n += mesh.Vertices[i];
                 mesh.AddVertex(n.x, n.y, n.z);
             }
-
+            
             for (int i = 0; i < nFaces; i++)
             {
                 int[] face = mesh.Faces[i];
@@ -53,7 +53,7 @@ namespace Mola
                 {
                     newFace[j] = face[face.Length - j - 1] + nVertices;
                 }
-                Array.Reverse(newFace);
+                //Array.Reverse(newFace);
                 mesh.AddFace(newFace);
             }
 
@@ -75,12 +75,16 @@ namespace Mola
                             face[2] = edge[1];
                             face[1] = edge[1] + nVertices;
                             face[0] = edge[0] + nVertices;
-                            Array.Reverse(face);
+                            //Array.Reverse(face);
                             mesh.AddFace(face);
                         }
 
                     }
                 }
+            }
+            for (int i = 0; i < mesh.FacesCount(); i++)
+            {
+                Array.Reverse(mesh.Faces[i]);
             }
             return mesh;
         }

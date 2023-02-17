@@ -652,5 +652,14 @@ namespace Mola
 			mesh.RecalculateNormals();
 
 		}
+		public List<float> FaceProperties(Func<Vector3[], float> analyse)
+        {
+			List<float> values = new List<float>();
+			foreach(int[] face in Faces)
+            {
+				values.Add(analyse(UtilsVertex.face_vertices(this, face)));
+            }
+			return values;
+        }
 	}
 }

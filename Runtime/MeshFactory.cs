@@ -395,11 +395,17 @@ namespace Mola
                 {
 					float phi = (float)(2 * Math.PI * ((float)u / (float)u_res));
 					List<float> cartesian = _polar_to_cartesian(radius, theta, phi);
-					mesh.AddVertex(cartesian[0] + cx, cartesian[1] + cy, cartesian[2] + cz);
+					mesh.AddVertex(cartesian[0] + cx, cartesian[1] + cz, cartesian[2] + cy);
                 } 
             }
 
-			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+            //swap y and z for y up coordinate system
+			for (int i = 0; i < mesh.VertexCount(); i++)
+            {
+                mesh.Vertices[i] = new Vector3(mesh.Vertices[i].x, mesh.Vertices[i].z, mesh.Vertices[i].y);
+			}
+
+            mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
 
 			// # work around weld_vertices problem
 			int v_top = 0;
@@ -420,6 +426,12 @@ namespace Mola
 
 				}
             }
+
+			for (int i = 0; i < mesh.FacesCount(); i++)
+			{
+				Array.Reverse(mesh.Faces[i]);
+			}
+
 			mesh.UpdateTopology();
 
 			return mesh;

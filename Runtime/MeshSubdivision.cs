@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Mola
@@ -25,6 +26,15 @@ namespace Mola
             Vector3 p1 = UtilsVertex.vertex_between_abs(v1, v2, w1);
             Vector3 p2 = UtilsVertex.vertex_between_abs(v2, v1, w2);
             return new List<Vector3>() { v1, p1, p2, v2 };
+        }
+        private static void _catmullVertices(MolaMesh mesh)
+        {
+            //TODO 
+            //foreach(int[] face in mesh.Faces)
+            //{
+            //    Vector3 center_vertex = UtilsVertex.vertices_list_center(UtilsVertex.face_vertices(mesh, face).ToList());
+            //}
+            throw new NotImplementedException();
         }
         /// <summary>
         /// Extrudes the face straight by distance height.
@@ -282,6 +292,29 @@ namespace Mola
             foreach (var face in molaMesh.Faces)
             {
                 List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(molaMesh, face, height, fraction, capTop);
+                foreach (var face_vertices in new_faces_vertices)
+                {
+                    newMesh.AddFace(face_vertices);
+                }
+            }
+            return newMesh;
+        }
+        /// <summary>
+        /// Extrudes all face in a MolaMesh tapered like a window by
+        /// creating an offset face and quads between every original 
+        /// edge and the corresponding new edge.
+        /// </summary>
+        /// <param name="molaMesh"></param>
+        /// <param name="heights"></param>
+        /// <param name="fractions"></param>
+        /// <param name="capTops"></param>
+        /// <returns></returns>
+        public static MolaMesh subdivide_mesh_extrude_tapered(MolaMesh molaMesh, List<float> heights, List<float> fractions, List<bool> capTops)
+        {
+            MolaMesh newMesh = new MolaMesh();
+            for (int i = 0; i < molaMesh.Faces.Count; i++)
+            {
+                List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(molaMesh, molaMesh.Faces[i], heights[i], fractions[i], capTops[i]);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
