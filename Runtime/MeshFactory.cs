@@ -206,7 +206,7 @@ namespace Mola
 		/// </summary>
 		/// <param name="vertices"></param>
 		/// <returns></returns>
-		public static MolaMesh createSingleFace(List<Vector3> vertices)
+		public static MolaMesh CreateSingleFace(List<Vector3> vertices)
         {
 			MolaMesh mesh = new MolaMesh();
 			mesh.AddFace(vertices.ToArray());
@@ -270,7 +270,7 @@ namespace Mola
 		/// Creates and returns a conic cylinder.
 		/// </summary>
 		/// <returns></returns>
-		public static MolaMesh createCone(float y1, float y2, float radius1, float radius2, int nSegments, bool capBottom=true, bool capTop=true, Color? color = null)
+		public static MolaMesh CreateCone(float y1, float y2, float radius1, float radius2, int nSegments, bool capBottom=true, bool capTop=true, Color? color = null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float deltaAngle = (float)Math.PI * (360 / nSegments) / 180;
@@ -324,7 +324,7 @@ namespace Mola
 			mesh.UpdateTopology();
 			return mesh;
 		}
-		public static MolaMesh createTube(Vector3 a, Vector3 b, int segments, float radius)
+		public static MolaMesh CreateTube(Vector3 a, Vector3 b, int segments, float radius)
 		{
 			List<Vector3> profile = UtilsVertex.getCircle(0, 0, radius, segments);
 
@@ -341,7 +341,7 @@ namespace Mola
 		/// <param name="z2"></param>
 		/// <param name="color"></param>
 		/// <returns></returns>
-		public static MolaMesh createBox(float x1, float y1, float z1, float x2, float y2, float z2, Color ? color=null)
+		public static MolaMesh CreateBox(float x1, float y1, float z1, float x2, float y2, float z2, Color ? color=null)
 		{
 
 			MolaMesh mesh = new MolaMesh();
@@ -349,7 +349,7 @@ namespace Mola
 			return mesh;
 
 		}
-		public static MolaMesh createGridMesh(IList<Vector3> vertices, int nU, int nV, bool uClosed)
+		public static MolaMesh CreateGridMesh(IList<Vector3> vertices, int nU, int nV, bool uClosed)
 		{
 
 			MolaMesh mesh = new MolaMesh();
@@ -397,7 +397,7 @@ namespace Mola
 		/// <param name="cy"></param>
 		/// <param name="cz"></param>
 		/// <returns></returns>
-		public static MolaMesh createIcosahedron(float radius=1, float cx=0, float cy=0, float cz=0, Color ? color=null)
+		public static MolaMesh CreateIcosahedron(float radius=1, float cx=0, float cy=0, float cz=0, Color ? color=null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float phi = (float)(1 + Math.Pow(5, 0.5)) / 2;
@@ -443,7 +443,7 @@ namespace Mola
 		/// Constructs a uv sphere mesh.
 		/// </summary>
 		/// <returns></returns>
-		public static MolaMesh createSphere(float radius= 1, float cx= 0, float cy= 0, float cz= 0, int u_res= 10, int v_res= 10, Color? color = null)
+		public static MolaMesh CreateSphere(float radius= 1, float cx= 0, float cy= 0, float cz= 0, int u_res= 10, int v_res= 10, Color? color = null)
         {
 			MolaMesh mesh = new MolaMesh();
 			for(int v = 0; v < v_res + 1; v++)
@@ -452,7 +452,7 @@ namespace Mola
 				for(int u = 0; u < u_res; u++)
                 {
 					float phi = (float)(2 * Math.PI * ((float)u / (float)u_res));
-					List<float> cartesian = _polar_to_cartesian(radius, theta, phi);
+					List<float> cartesian = _PolarToCartesian(radius, theta, phi);
 					mesh.AddVertex(cartesian[0] + cx, cartesian[1] + cz, cartesian[2] + cy);
                 } 
             }
@@ -494,7 +494,7 @@ namespace Mola
 
 			return mesh;
 		}
-		private static List<float> _polar_to_cartesian(float r, float theta, float phi)
+		private static List<float> _PolarToCartesian(float r, float theta, float phi)
         {
 			return new List<float>() { 
 				(float)(r * Math.Sin(theta) * Math.Cos(phi)), 
@@ -510,7 +510,7 @@ namespace Mola
 		/// <param name="cy"></param>
 		/// <param name="cz"></param>
 		/// <returns></returns>
-		public static MolaMesh createDodecahedron(float radius= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
+		public static MolaMesh CreateDodecahedron(float radius= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float phi = (float)(1 + Math.Pow(5, 0.5)) / 2;
@@ -584,7 +584,7 @@ namespace Mola
 		/// Constructs a tetrahedron mesh.
 		/// </summary>
 		/// <returns></returns>
-		public static MolaMesh createTetrahedron(float size= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
+		public static MolaMesh CreateTetrahedron(float size= 1, float cx= 0, float cy= 0, float cz= 0, Color ? color=null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float coord = (float)(1 / Math.Sqrt(2));
@@ -617,7 +617,7 @@ namespace Mola
 		/// Constructs a torus mesh.
 		/// </summary>
 		/// <returns></returns>
-		public static MolaMesh createTorus(float ringRadius, float tubeRadius, int ringN = 16, int tubeN = 16, Color ? color=null)
+		public static MolaMesh CreateTorus(float ringRadius, float tubeRadius, int ringN = 16, int tubeN = 16, Color ? color=null)
         {
 			MolaMesh mesh = new MolaMesh();
 			float theta = (float)(2 * Math.PI / (float)ringN);
@@ -627,7 +627,7 @@ namespace Mola
             {
 				for(int j = 0; j < tubeN; j++)
                 {
-					mesh.AddVertex(_torus_vertex(ringRadius, tubeRadius, phi * j, theta * i), color ?? Color.white);
+					mesh.AddVertex(_TorusVertex(ringRadius, tubeRadius, phi * j, theta * i), color ?? Color.white);
                 }
             }
 
@@ -652,13 +652,116 @@ namespace Mola
 
 			return mesh;
 		}
-		private static Vector3 _torus_vertex(float ringR, float tubeR, float ph, float th)
+		private static Vector3 _TorusVertex(float ringR, float tubeR, float ph, float th)
         {
 			float x = (float)(Math.Cos(th) * (ringR + tubeR * Math.Cos(ph)));
 			float y = (float)(Math.Sin(th) * (ringR + tubeR * Math.Cos(ph)));
 			float z = (float)(tubeR * Math.Sin(ph));
 
 			return new Vector3(x, y, z);
+		}
+		/// <summary>
+		/// Constructs a octahedron mesh.
+		/// </summary>
+		/// <param name="edgeLen"></param>
+		/// <param name="cx"></param>
+		/// <param name="cy"></param>
+		/// <param name="cz"></param>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static MolaMesh CreateOctahedron(float edgeLen= 1, float cx= 0, float cy= 0, float cz= 0, Color? color = null)
+        {
+			MolaMesh mesh = new MolaMesh();
+
+			mesh.Vertices = new List<Vector3>()
+			{
+				new Vector3(0, 0, edgeLen / 2),
+				new Vector3(-edgeLen / 2, 0, 0),
+				new Vector3(0, -edgeLen / 2, 0),
+				new Vector3(edgeLen / 2, 0, 0),
+				new Vector3(0, edgeLen / 2, 0),
+				new Vector3(0, 0, -edgeLen / 2),
+			};
+
+			Vector3 centerPoint = new Vector3(cx, cy, cz);
+            for (int i = 0; i < mesh.VertexCount(); i++)
+            {
+				mesh.Vertices[i] += centerPoint;
+            }
+
+			mesh.Faces = new List<int[]>()
+			{
+				new int[]{0, 1, 2},
+				new int[]{0, 2, 3},
+				new int[]{0, 3, 4},
+				new int[]{0, 4, 1},
+				new int[]{5, 2, 1},
+				new int[]{5, 3, 2},
+				new int[]{5, 4, 3},
+				new int[]{5, 1, 4},
+
+			};
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+			mesh.UpdateTopology();
+			return mesh;
+		}
+		/// <summary>
+		/// Constructs a rhombic dodecahedron mesh.
+		/// </summary>
+		/// <param name="edge_length"></param>
+		/// <param name="cx"></param>
+		/// <param name="cy"></param>
+		/// <param name="cz"></param>
+		/// <param name="color"></param>
+		/// <returns></returns>
+		public static MolaMesh CreateRhombicDodecahedron(float edge_length= 1, float cx= 0, float cy= 0, float cz= 0, Color? color = null)
+        {
+			MolaMesh mesh = new MolaMesh();
+
+			mesh.Vertices = new List<Vector3>()
+			{
+				new Vector3(0, 0, 2 * edge_length),
+				new Vector3(-edge_length, edge_length, edge_length),
+				new Vector3(-edge_length, -edge_length, edge_length),
+				new Vector3(edge_length, -edge_length, edge_length),
+				new Vector3(edge_length, edge_length, edge_length),
+				new Vector3(-2 * edge_length, 0, 0),
+				new Vector3(0, -2 * edge_length, 0),
+				new Vector3(2 * edge_length, 0, 0),
+				new Vector3(0, 2 * edge_length, 0),
+				new Vector3(-edge_length, edge_length, -edge_length),
+				new Vector3(-edge_length, -edge_length, -edge_length),
+				new Vector3(edge_length, -edge_length, -edge_length),
+				new Vector3(edge_length, edge_length, -edge_length),
+				new Vector3(0, 0, -2 * edge_length)
+			};
+
+			Vector3 centerPoint = new Vector3(cx, cy, cz);
+			for (int i = 0; i < mesh.VertexCount(); i++)
+			{
+				mesh.Vertices[i] += centerPoint;
+			}
+
+			mesh.Faces = new List<int[]>()
+			{
+				new int[]{1, 5, 2, 0},
+				new int[]{2, 6, 3, 0},
+				new int[]{3, 7, 4, 0},
+				new int[]{4, 8, 1, 0},
+				new int[]{5, 10, 6, 2},
+				new int[]{6, 11, 7, 3},
+				new int[]{7, 12, 8, 4},
+				new int[]{8, 9, 5, 1},
+				new int[]{5, 9, 13, 10},
+				new int[]{6, 10, 13, 11},
+				new int[]{7, 11, 13, 12},
+				new int[]{8, 12, 13, 9}
+			};
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+			mesh.UpdateTopology();
+			return mesh;
 		}
 	}
 }
