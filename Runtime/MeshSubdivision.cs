@@ -8,7 +8,7 @@ namespace Mola
 {
     public class MeshSubdivision : MonoBehaviour
     {
-        private static List<Vector3> _vertices_betweem(Vector3 v1, Vector3 v2, int n)
+        private static List<Vector3> VerticesBetween(Vector3 v1, Vector3 v2, int n)
         {
             List<Vector3> rowList = new List<Vector3>();
             Vector3 deltaV = (v2 - v1) / n;
@@ -21,13 +21,13 @@ namespace Mola
 
             return rowList;
         }
-        private static List<Vector3> _vertices_frame(Vector3 v1, Vector3 v2, float w1, float w2)
+        private static List<Vector3> VerticesFrame(Vector3 v1, Vector3 v2, float w1, float w2)
         {
             Vector3 p1 = UtilsVertex.vertex_between_abs(v1, v2, w1);
             Vector3 p2 = UtilsVertex.vertex_between_abs(v2, v1, w2);
             return new List<Vector3>() { v1, p1, p2, v2 };
         }
-        private static void _catmullVertices(MolaMesh mesh)
+        private static void CatmullVertices(MolaMesh mesh)
         {
             //TODO 
             //foreach(int[] face in mesh.Faces)
@@ -43,9 +43,9 @@ namespace Mola
         /// <param name="height">The extrusion distance, default 0</param>
         /// <param name="capTop">Toggle if top face (extrusion face) should be created, default True</param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude(Vector3[] face_vertices, float height, bool capTop = true)
+        public static List<Vector3[]> SubdivideFaceExtrude(Vector3[] face_vertices, float height, bool capTop = true)
         {
-            Vector3 normal = UtilsFace.face_normal(face_vertices);
+            Vector3 normal = UtilsFace.FaceNormal(face_vertices);
             normal *= height;
 
             List<Vector3> new_vertices = new List<Vector3>();
@@ -80,11 +80,11 @@ namespace Mola
         /// <param name="height"></param>
         /// <param name="capTop"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude(MolaMesh molaMesh, int[] face, float height, bool capTop = true)
+        public static List<Vector3[]> SubdivideFaceExtrude(MolaMesh molaMesh, int[] face, float height, bool capTop = true)
         {
 
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_extrude(face_vertices, height, capTop);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceExtrude(face_vertices, height, capTop);
 
             return new_faces_vertices;
         }
@@ -94,12 +94,12 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="extrudeHeight"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_extrude(MolaMesh molaMesh, float extrudeHeight)
+        public static MolaMesh SubdivideMeshExtrude(MolaMesh molaMesh, float extrudeHeight)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = MeshSubdivision.subdivide_face_extrude(molaMesh, face, extrudeHeight);
+                List<Vector3[]> new_faces_vertices = MeshSubdivision.SubdivideFaceExtrude(molaMesh, face, extrudeHeight);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -114,18 +114,18 @@ namespace Mola
         /// <param name="nU"></param>
         /// <param name="nV"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_grid(Vector3[] face_vertices, int nU, int nV)
+        public static List<Vector3[]> SubdivideFaceGrid(Vector3[] face_vertices, int nU, int nV)
         {
             List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
             if (face_vertices.Length == 4)
             {
-                List<Vector3> vsU1 = _vertices_betweem(face_vertices[0], face_vertices[1], nU);
-                List<Vector3> vsU2 = _vertices_betweem(face_vertices[3], face_vertices[2], nU);
+                List<Vector3> vsU1 = VerticesBetween(face_vertices[0], face_vertices[1], nU);
+                List<Vector3> vsU2 = VerticesBetween(face_vertices[3], face_vertices[2], nU);
 
                 List<List<Vector3>> gridVertices = new List<List<Vector3>>();
                 for (int i = 0; i < vsU1.Count; i++)
                 {
-                    gridVertices.Add(_vertices_betweem(vsU1[i], vsU2[i], nV));
+                    gridVertices.Add(VerticesBetween(vsU1[i], vsU2[i], nV));
                 }
 
                 for (int u = 0; u < vsU1.Count - 1; u++)
@@ -142,13 +142,13 @@ namespace Mola
 
             else if (face_vertices.Length == 3)
             {
-                List<Vector3> vsU1 = _vertices_betweem(face_vertices[0], face_vertices[1], nU);
-                List<Vector3> vsU2 = _vertices_betweem(face_vertices[0], face_vertices[2], nU);
+                List<Vector3> vsU1 = VerticesBetween(face_vertices[0], face_vertices[1], nU);
+                List<Vector3> vsU2 = VerticesBetween(face_vertices[0], face_vertices[2], nU);
 
                 List<List<Vector3>> gridVertices = new List<List<Vector3>>();
                 for (int u = 0; u < vsU1.Count; u++)
                 {
-                    gridVertices.Add(_vertices_betweem(vsU1[u], vsU2[u], nV));
+                    gridVertices.Add(VerticesBetween(vsU1[u], vsU2[u], nV));
                 }
 
                 Vector3 v0 = face_vertices[0];
@@ -181,10 +181,10 @@ namespace Mola
         /// <param name="nU"></param>
         /// <param name="nV"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_grid(MolaMesh molaMesh, int[] face, int nU, int nV)
+        public static List<Vector3[]> SubdivideFaceGrid(MolaMesh molaMesh, int[] face, int nU, int nV)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_grid(face_vertices, nU, nV);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceGrid(face_vertices, nU, nV);
 
             return new_faces_vertices;
         }
@@ -195,12 +195,12 @@ namespace Mola
         /// <param name="nU"></param>
         /// <param name="nV"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_grid(MolaMesh molaMesh, int nU, int nV)
+        public static MolaMesh SubdivideMeshGrid(MolaMesh molaMesh, int nU, int nV)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces) //list of index
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_grid(molaMesh, face, nU, nV);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceGrid(molaMesh, face, nU, nV);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -218,10 +218,10 @@ namespace Mola
         /// <param name="fraction"></param>
         /// <param name="capTop"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_tapered(Vector3[] face_vertices, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        public static List<Vector3[]> SubdivideFaceExtrudeTapered(Vector3[] face_vertices, float height = 0f, float fraction = 0.5f, bool capTop = true)
         {
-            Vector3 center_vertex = UtilsFace.face_center(face_vertices);
-            Vector3 normal = UtilsFace.face_normal(face_vertices);
+            Vector3 center_vertex = UtilsFace.FaceCenter(face_vertices);
+            Vector3 normal = UtilsFace.FaceNormal(face_vertices);
             Vector3 scaled_normal = normal * height;
 
             //# calculate new vertex positions
@@ -269,10 +269,10 @@ namespace Mola
         /// <param name="fraction"></param>
         /// <param name="capTop"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_tapered(MolaMesh molaMesh, int[] face, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        public static List<Vector3[]> SubdivideFaceExtrudeTapered(MolaMesh molaMesh, int[] face, float height = 0f, float fraction = 0.5f, bool capTop = true)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(face_vertices, height, fraction, capTop);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeTapered(face_vertices, height, fraction, capTop);
 
             return new_faces_vertices;
         }
@@ -286,12 +286,12 @@ namespace Mola
         /// <param name="fraction"></param>
         /// <param name="capTop"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_extrude_tapered(MolaMesh molaMesh, float height = 0f, float fraction = 0.5f, bool capTop = true)
+        public static MolaMesh SubdivideMeshExtrudeTapered(MolaMesh molaMesh, float height = 0f, float fraction = 0.5f, bool capTop = true)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(molaMesh, face, height, fraction, capTop);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeTapered(molaMesh, face, height, fraction, capTop);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -309,12 +309,12 @@ namespace Mola
         /// <param name="fractions"></param>
         /// <param name="capTops"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_extrude_tapered(MolaMesh molaMesh, List<float> heights, List<float> fractions, List<bool> capTops)
+        public static MolaMesh SubdivideMeshExtrudeTapered(MolaMesh molaMesh, List<float> heights, List<float> fractions, List<bool> capTops)
         {
             MolaMesh newMesh = new MolaMesh();
             for (int i = 0; i < molaMesh.Faces.Count; i++)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_extrude_tapered(molaMesh, molaMesh.Faces[i], heights[i], fractions[i], capTops[i]);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeTapered(molaMesh, molaMesh.Faces[i], heights[i], fractions[i], capTops[i]);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -328,11 +328,11 @@ namespace Mola
         /// <param name="face_vertices"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_roof(Vector3[] face_vertices, float height = 0f)
+        public static List<Vector3[]> SubdivideFaceSplitRoof(Vector3[] face_vertices, float height = 0f)
         {
             List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
 
-            Vector3 normal = UtilsFace.face_normal(face_vertices);
+            Vector3 normal = UtilsFace.FaceNormal(face_vertices);
             normal *= height;
 
             if (face_vertices.Length == 4)
@@ -376,10 +376,10 @@ namespace Mola
         /// <param name="face"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_roof(MolaMesh molaMesh, int[] face, float height = 0f)
+        public static List<Vector3[]> SubdivideFaceSplitRoof(MolaMesh molaMesh, int[] face, float height = 0f)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_split_roof(face_vertices, height);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceSplitRoof(face_vertices, height);
 
             return new_faces_vertices;
         }
@@ -389,12 +389,12 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_split_roof(MolaMesh molaMesh, float height = 0f)
+        public static MolaMesh SubdivideMeshSplitRoof(MolaMesh molaMesh, float height = 0f)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_split_roof(molaMesh, face, height);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceSplitRoof(molaMesh, face, height);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -409,7 +409,7 @@ namespace Mola
         /// <param name="face_vertices">The face to be extruded</param>
         /// <param name="point">The point to extrude to</param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_to_point(Vector3[] face_vertices, Vector3 point)
+        public static List<Vector3[]> SubdivideFaceExtrudeToPoint(Vector3[] face_vertices, Vector3 point)
         {
             List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
 
@@ -431,10 +431,10 @@ namespace Mola
         /// <param name="face"></param>
         /// <param name="point"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_to_point(MolaMesh molaMesh, int[] face, Vector3 point)
+        public static List<Vector3[]> SubdivideFaceExtrudeToPoint(MolaMesh molaMesh, int[] face, Vector3 point)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_extrude_to_point(face_vertices, point);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeToPoint(face_vertices, point);
 
             return new_faces_vertices;
         }
@@ -446,17 +446,17 @@ namespace Mola
         /// <param name="face_vertices"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_to_point_center(Vector3[] face_vertices, float height= 0f)
+        public static List<Vector3[]> SubdivideFaceExtrudeToPointCenter(Vector3[] face_vertices, float height= 0f)
         {
             List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
 
-            Vector3 normal = UtilsFace.face_normal(face_vertices);
+            Vector3 normal = UtilsFace.FaceNormal(face_vertices);
             normal *= height;
 
-            Vector3 center = UtilsFace.face_center(face_vertices);
+            Vector3 center = UtilsFace.FaceCenter(face_vertices);
             center += normal;
 
-            return subdivide_face_extrude_to_point(face_vertices, center);
+            return SubdivideFaceExtrudeToPoint(face_vertices, center);
         }
         /// <summary>
         /// Extrudes the face to the center point moved by height
@@ -467,10 +467,10 @@ namespace Mola
         /// <param name="face"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_extrude_to_point_center(MolaMesh molaMesh, int[] face, float height = 0f)
+        public static List<Vector3[]> SubdivideFaceExtrudeToPointCenter(MolaMesh molaMesh, int[] face, float height = 0f)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_extrude_to_point_center(face_vertices, height);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeToPointCenter(face_vertices, height);
 
             return new_faces_vertices;
         }
@@ -482,12 +482,12 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="height"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_extrude_to_point_center(MolaMesh molaMesh, float height = 0f)
+        public static MolaMesh SubdivideMeshExtrudeToPointCenter(MolaMesh molaMesh, float height = 0f)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_extrude_to_point_center(molaMesh, face, height);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceExtrudeToPointCenter(molaMesh, face, height);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -501,7 +501,7 @@ namespace Mola
         /// <param name="face_vertices"></param>
         /// <param name="w"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_frame(Vector3[] face_vertices, float w)
+        public static List<Vector3[]> SubdivideFaceSplitFrame(Vector3[] face_vertices, float w)
         {
             List<Vector3[]> new_faces_vertices = new List<Vector3[]>();
             List<Vector3> innerVertices = new List<Vector3>();
@@ -526,8 +526,8 @@ namespace Mola
                 float w1 = w / (float)Math.Sin(th1);
                 float w2 = w / (float)Math.Sin(th2);
 
-                List<Vector3> vs1 = _vertices_frame(v, vn, w1, w2);
-                List<Vector3> vs2 = _vertices_frame(_vertices_frame(vp, v, w1, w1)[2], _vertices_frame(vn, vnn, w2, w2)[1], w1, w2);
+                List<Vector3> vs1 = VerticesFrame(v, vn, w1, w2);
+                List<Vector3> vs2 = VerticesFrame(VerticesFrame(vp, v, w1, w1)[2], VerticesFrame(vn, vnn, w2, w2)[1], w1, w2);
 
                 innerVertices.Add(vs2[1]);
 
@@ -549,10 +549,10 @@ namespace Mola
         /// <param name="face"></param>
         /// <param name="w"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_frame(MolaMesh molaMesh, int[] face, float w)
+        public static List<Vector3[]> SubdivideFaceSplitFrame(MolaMesh molaMesh, int[] face, float w)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_split_frame(face_vertices, w);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceSplitFrame(face_vertices, w);
 
             return new_faces_vertices;
         }
@@ -563,12 +563,12 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="w"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_split_frame(MolaMesh molaMesh, float w)
+        public static MolaMesh SubdivideMeshSplitFrame(MolaMesh molaMesh, float w)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_split_frame(molaMesh, face, w);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceSplitFrame(molaMesh, face, w);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);
@@ -583,14 +583,14 @@ namespace Mola
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_grid_abs(Vector3[] face_vertices, float x, float y)
+        public static List<Vector3[]> SubdivideFaceSplitGridAbs(Vector3[] face_vertices, float x, float y)
         {
             int u = (int)(Vector3.Distance(face_vertices[0], face_vertices[1]) / x);
             int v = (int)(Vector3.Distance(face_vertices[1], face_vertices[2]) / y);
             if (u == 0) u = 1;
             if (v == 0) v = 1;
 
-            return subdivide_face_grid(face_vertices, u, v);
+            return SubdivideFaceGrid(face_vertices, u, v);
         }
         /// <summary>
         /// Subidivide face into cells with absolute size
@@ -600,10 +600,10 @@ namespace Mola
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static List<Vector3[]> subdivide_face_split_grid_abs(MolaMesh molaMesh, int[] face, float x, float y)
+        public static List<Vector3[]> SubdivideFaceSplitGridAbs(MolaMesh molaMesh, int[] face, float x, float y)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            List<Vector3[]> new_faces_vertices = subdivide_face_split_grid_abs(face_vertices, x, y);
+            List<Vector3[]> new_faces_vertices = SubdivideFaceSplitGridAbs(face_vertices, x, y);
 
             return new_faces_vertices;
         }
@@ -614,12 +614,12 @@ namespace Mola
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static MolaMesh subdivide_mesh_split_grid_abs(MolaMesh molaMesh, float x, float y)
+        public static MolaMesh SubdivideMeshSplitGridAbs(MolaMesh molaMesh, float x, float y)
         {
             MolaMesh newMesh = new MolaMesh();
             foreach (var face in molaMesh.Faces)
             {
-                List<Vector3[]> new_faces_vertices = subdivide_face_split_grid_abs(molaMesh, face, x, y);
+                List<Vector3[]> new_faces_vertices = SubdivideFaceSplitGridAbs(molaMesh, face, x, y);
                 foreach (var face_vertices in new_faces_vertices)
                 {
                     newMesh.AddFace(face_vertices);

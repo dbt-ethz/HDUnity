@@ -8,7 +8,7 @@ namespace Mola
 {
     public class UtilsFace
     {
-        public static Vector3 face_normal(Vector3[] face_vertices)
+        public static Vector3 FaceNormal(Vector3[] face_vertices)
         {
             //"""
             //Returns the normal of a face, a vector of length 1 perpendicular to the plane of the triangle.
@@ -18,11 +18,11 @@ namespace Mola
             //face : mola.Face
             //    the face to get the normal from
             //"""
-            //return utils_vertex.triangle_normal(face.vertices[0], face.vertices[1], face.vertices[2])
+            //return utils_vertex.TriangleNormal(face.vertices[0], face.vertices[1], face.vertices[2])
 
-            return triangle_normal(face_vertices[0], face_vertices[1], face_vertices[2]);
+            return TriangleNormal(face_vertices[0], face_vertices[1], face_vertices[2]);
         }
-        public static Vector3 triangle_normal(Vector3 v1, Vector3 v2, Vector3 v3)
+        public static Vector3 TriangleNormal(Vector3 v1, Vector3 v2, Vector3 v3)
         {
             //"""
             //Returns the normal of a triangle defined by 3 vertices.
@@ -41,28 +41,28 @@ namespace Mola
 
             return crossProduct;
         }
-        public static Vector3 face_center(Vector3[] face_vertices)
+        public static Vector3 FaceCenter(Vector3[] face_vertices)
         {
             List<Vector3> vertices_list = new List<Vector3>(face_vertices);
             return UtilsVertex.vertices_list_center(vertices_list);
         }
-        public static float face_center_y(Vector3[] face_verties)
+        public static float FaceCenterY(Vector3[] face_verties)
         {
-            return face_center(face_verties).y;
+            return FaceCenter(face_verties).y;
         }
-        public static Vector3 face_center(MolaMesh molaMesh, int[] face)
+        public static Vector3 FaceCenter(MolaMesh molaMesh, int[] face)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            return face_center(face_vertices);
+            return FaceCenter(face_vertices);
         }
         /// <summary>
         /// Returns the altitude, 0 if the face is vertical, -Pi/2 if it faces downwards, +Pi/2 if it faces upwards.
         /// </summary>
         /// <param name="face_vertices"></param>
         /// <returns></returns>
-        public static float face_angle_vertical(Vector3[] face_vertices)
+        public static float FaceAngleVertical(Vector3[] face_vertices)
         {
-            Vector3 n = face_normal(face_vertices);
+            Vector3 n = FaceNormal(face_vertices);
             return (float)Math.Asin(n.y);
         }
         /// <summary>
@@ -71,10 +71,10 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="face"></param>
         /// <returns></returns>
-        public static float face_angle_vertical(MolaMesh molaMesh, int[] face)
+        public static float FaceAngleVertical(MolaMesh molaMesh, int[] face)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            Vector3 n = face_normal(face_vertices);
+            Vector3 n = FaceNormal(face_vertices);
             return (float)Math.Asin(n.y);
         }
         /// <summary>
@@ -82,9 +82,9 @@ namespace Mola
          /// </summary>
          /// <param name="face_vertices"></param>
          /// <returns></returns>
-        public static float face_angle_horizontal(Vector3[] face_vertices)
+        public static float FaceAngleHorizontal(Vector3[] face_vertices)
         {
-            Vector3 n = face_normal(face_vertices);
+            Vector3 n = FaceNormal(face_vertices);
             return (float)Math.Atan2(n.z, n.x);
         }
         /// <summary>
@@ -93,17 +93,17 @@ namespace Mola
         /// <param name="molaMesh"></param>
         /// <param name="face"></param>
         /// <returns></returns>
-        public static float face_angle_horizontal(MolaMesh molaMesh, int[] face)
+        public static float FaceAngleHorizontal(MolaMesh molaMesh, int[] face)
         {
             Vector3[] face_vertices = UtilsVertex.face_vertices(molaMesh, face);
-            Vector3 n = face_normal(face_vertices);
+            Vector3 n = FaceNormal(face_vertices);
             return (float)Math.Atan2(n.z, n.x);
         }
         /// <summary>
         /// Assigns a color to all the faces by values,
         /// from smallest(red) to biggest(purple).
         /// </summary>
-        public static void color_face_by_value(MolaMesh mesh, List<int[]> faces, List<float> values, bool doGrayScale=false)
+        public static void ColorFaceByValue(MolaMesh mesh, List<int[]> faces, List<float> values, bool doGrayScale=false)
         {
             if (faces.Count != values.Count)
             {
@@ -125,9 +125,9 @@ namespace Mola
         /// Assigns a color to all the faces by values,
         /// from smallest(red) to biggest(purple).
         /// </summary>
-        public static void color_face_by_value(MolaMesh mesh, List<float> values, bool doGrayScale = false)
+        public static void ColorFaceByValue(MolaMesh mesh, List<float> values, bool doGrayScale = false)
         {
-            color_face_by_value(mesh, mesh.Faces, values, doGrayScale);
+            ColorFaceByValue(mesh, mesh.Faces, values, doGrayScale);
         }
     }
 }

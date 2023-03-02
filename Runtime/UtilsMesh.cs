@@ -18,7 +18,7 @@ namespace Mola
         /// <param name="closeborders"></param>
         /// <param name="constrainZ"></param>
         /// <returns></returns>
-        public static MolaMesh meshOffset(MolaMesh mesh, float offset, bool closeborders, bool constrainZ = false)
+        public static MolaMesh MeshOffset(MolaMesh mesh, float offset, bool closeborders, bool constrainZ = false)
         {
             // calculate normals per vertex
             // create new vertices and duplicate faces

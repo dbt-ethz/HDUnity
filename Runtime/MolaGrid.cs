@@ -15,7 +15,6 @@ namespace Mola
             this.nYZ = nY * nZ;
             this.Values = new T[nX * nY * nZ];
         }
-
         public T this[int index]
         {
             get { return values[index]; }
@@ -35,8 +34,6 @@ namespace Mola
         IList<T> values;
 
         public int Count => Values.Count;
-
-
 
         public int NX { get => nX; set => nX = value; }
         public int NY { get => nY; set => nY = value; }

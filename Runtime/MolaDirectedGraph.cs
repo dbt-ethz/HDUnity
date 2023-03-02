@@ -8,7 +8,6 @@ public class MolaDirectedGraph
     {
         InitList(nNodes);
     }
-
     private void InitList(int nNodes)
     {
         edges = new List<List<DirectedEdge>>(nNodes);
@@ -28,7 +27,6 @@ public class MolaDirectedGraph
         AddDirectedEdge(node1, node2, weight1);
         AddDirectedEdge(node2, node1, weight2);
     }
-
     public float SetDirectedWeight(int node1, int node2,float weight)
     {
         return 1;
@@ -49,19 +47,14 @@ public class MolaDirectedGraph
             edge.weight = weight;
         }
     }
-   
-
     public int NodesCount()
     {
         return edges.Count;
     }
-
-
     public List<DirectedEdge> GetDirectedEdges(int node)
     {
         return edges[node];
     }
-
     public class DirectedEdge
     {
         public DirectedEdge(int n1, int n2, float weight = 1)
