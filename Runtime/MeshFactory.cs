@@ -221,49 +221,107 @@ namespace Mola
 		/// <param name="radius1"></param>
 		/// <param name="radius2"></param>
 		/// <returns></returns>
-		public static MolaMesh createCone(Vector3 a, Vector3 b, int segments, float radius1, float radius2, bool capTop=true, bool capBottom=true, Color ? color=null)
-		{
-			//TODO for now top and bottom circle are on XY plane.
-			List<Vector3> profile1 = UtilsVertex.getCircle(a.x, a.y, radius1, segments, a.z);
-			List<Vector3> profile2 = UtilsVertex.getCircle(b.x, b.y, radius1, segments, b.z);
+		//public static MolaMesh createCone(Vector3 a, Vector3 b, int segments, float radius1, float radius2, bool capTop=true, bool capBottom=true, Color ? color=null)
+		//{
+		//	//TODO for now top and bottom circle are on XY plane.
+		//	List<Vector3> profile1 = UtilsVertex.getCircle(a.x, a.y, radius1, segments, a.z);
+		//	List<Vector3> profile2 = UtilsVertex.getCircle(b.x, b.y, radius1, segments, b.z);
+		//	MolaMesh mesh = new MolaMesh();
+		//	mesh.Vertices.AddRange(profile1);
+		//	mesh.Vertices.AddRange(profile2);
+		//	mesh.AddVertex(a.x, a.y, a.z);
+		//	mesh.AddVertex(b.x, b.y, b.z);
+
+		//	mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+
+		//	for (int i = 0; i < segments; i++)
+		//	{
+		//		int i2 = (i + 1) % segments;
+		//		int i3 = i + segments;
+		//		int i4 = i2 + segments;
+		//		//mesh.AddQuad(i2, i, i3, i4);
+		//		mesh.AddQuad(i4, i3, i, i2);
+		//	}
+  //          // base;
+  //          if (capBottom)
+  //          {
+		//		int iCenter = segments * 2;
+		//		for (int i = 0; i < segments; i++)
+		//		{
+		//			int i2 = (i + 1) % segments;
+		//			//mesh.AddTriangle(i, i2, iCenter);
+		//			mesh.AddTriangle(iCenter, i2, i);
+		//		}
+		//	}
+		//	//top
+		//	if (capTop)
+  //          {
+		//		int iCenter = segments * 2 + 1;
+		//		for (int i = 0; i < segments; i++)
+		//		{
+		//			int i2 = (i + 1) % segments + segments;
+		//			//mesh.AddTriangle(i + segments, iCenter, i2);
+		//			mesh.AddTriangle(i2, iCenter, i + segments);
+		//		}
+		//	}
+		//	return mesh;
+		//}
+		/// <summary>
+		/// Creates and returns a conic cylinder.
+		/// </summary>
+		/// <returns></returns>
+		public static MolaMesh createCone(float y1, float y2, float radius1, float radius2, int nSegments, bool capBottom=true, bool capTop=true, Color? color = null)
+        {
 			MolaMesh mesh = new MolaMesh();
-			mesh.Vertices.AddRange(profile1);
-			mesh.Vertices.AddRange(profile2);
-			mesh.AddVertex(a.x, a.y, a.z);
-			mesh.AddVertex(b.x, b.y, b.z);
+			float deltaAngle = (float)Math.PI * (360 / nSegments) / 180;
 
-			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+			float angle = 0;
+			List<Vector3> verticesBottom = new List<Vector3>();
+			List<Vector3> verticesTop = new List<Vector3>();
 
-			for (int i = 0; i < segments; i++)
-			{
-				int i2 = (i + 1) % segments;
-				int i3 = i + segments;
-				int i4 = i2 + segments;
-				//mesh.AddQuad(i2, i, i3, i4);
-				mesh.AddQuad(i4, i3, i, i2);
+            for (int i = 0; i < nSegments; i++)
+            {
+				float x1 = radius1 * (float)Math.Cos(angle);
+				float z1 = radius1 * (float)Math.Sin(angle);
+				verticesBottom.Add(new Vector3(x1, y1, z1));
+
+				float x2 = radius2 * (float)Math.Cos(angle);
+				float z2 = radius2 * (float)Math.Sin(angle);
+				verticesTop.Add(new Vector3(x2, y2, z2));
+
+				angle += deltaAngle;
+            }
+
+			mesh.Vertices.AddRange(verticesBottom);
+			mesh.Vertices.AddRange(verticesTop);
+
+			for (int i = 0; i < nSegments; i++)
+            {
+				int j = (i + 1) % nSegments;
+				mesh.AddQuad(i + nSegments, j+nSegments, j, i);
 			}
-            // base;
+
             if (capBottom)
             {
-				int iCenter = segments * 2;
-				for (int i = 0; i < segments; i++)
-				{
-					int i2 = (i + 1) % segments;
-					//mesh.AddTriangle(i, i2, iCenter);
-					mesh.AddTriangle(iCenter, i2, i);
+				int center = mesh.AddVertex(0 ,y1, 0);
+                for (int i = 0; i < nSegments; i++)
+                {
+					int j = (i + 1) % nSegments;
+					mesh.AddTriangle(center, i, j);
 				}
-			}
-			//top
+            }
 			if (capTop)
             {
-				int iCenter = segments * 2 + 1;
-				for (int i = 0; i < segments; i++)
-				{
-					int i2 = (i + 1) % segments + segments;
-					//mesh.AddTriangle(i + segments, iCenter, i2);
-					mesh.AddTriangle(i2, iCenter, i + segments);
+				int center = mesh.AddVertex(0 ,y2, 0);
+                for (int i = 0; i < nSegments; i++)
+                {
+					int j = (i + 1) % nSegments;
+					mesh.AddTriangle(center, j + nSegments, i + nSegments);
 				}
-			}
+            }
+
+			mesh.Colors = Enumerable.Repeat(color ?? Color.white, mesh.VertexCount()).ToList();
+			mesh.UpdateTopology();
 			return mesh;
 		}
 		public static MolaMesh createTube(Vector3 a, Vector3 b, int segments, float radius)
