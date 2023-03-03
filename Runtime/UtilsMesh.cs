@@ -53,14 +53,12 @@ namespace Mola
                 {
                     newFace[j] = face[face.Length - j - 1] + nVertices;
                 }
-                //Array.Reverse(newFace);
                 mesh.AddFace(newFace);
             }
 
             if (closeborders)
             {
                 mesh.UpdateTopology();
-                //mesh.
                 ReadOnlyCollection<int[]> edges = mesh.GetTopoEdges();
                 foreach (int[] edge in edges)
                 {
@@ -75,7 +73,6 @@ namespace Mola
                             face[2] = edge[1];
                             face[1] = edge[1] + nVertices;
                             face[0] = edge[0] + nVertices;
-                            //Array.Reverse(face);
                             mesh.AddFace(face);
                         }
 

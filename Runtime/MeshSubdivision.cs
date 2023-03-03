@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using UnityEngine;
 
@@ -27,14 +28,126 @@ namespace Mola
             Vector3 p2 = UtilsVertex.vertex_between_abs(v2, v1, w2);
             return new List<Vector3>() { v1, p1, p2, v2 };
         }
-        private static void CatmullVertices(MolaMesh mesh)
+        /// <summary>
+        /// Apply Catmull–Clark algorithm to a MolaMesh
+        /// </summary>
+        /// <param name="mesh"></param>
+        /// <returns></returns>
+        public static MolaMesh SubdivideMeshCatmullClark(MolaMesh mesh)
         {
-            //TODO 
-            //foreach(int[] face in mesh.Faces)
-            //{
-            //    Vector3 center_vertex = UtilsVertex.vertices_list_center(UtilsVertex.face_vertices(mesh, face).ToList());
-            //}
-            throw new NotImplementedException();
+            mesh.WeldVertices();
+            mesh.UpdateTopology();
+            
+            List<bool> vertex_fix = Enumerable.Repeat(false, mesh.VertexCount()).ToList();
+
+            // get face vertex
+            List<Vector3> face_vertices = new List<Vector3>();
+            foreach (int[] face in mesh.Faces)
+            {
+                Vector3 v = UtilsFace.FaceCenter(mesh, face);
+                face_vertices.Add(v);
+            }
+
+            // get edge vertex
+            ReadOnlyCollection<int[]> topoEdges = mesh.GetTopoEdges();
+            List<Vector3> edge_vertices = new List<Vector3>();
+            foreach (int[] edge in topoEdges)
+            {
+                if (edge[2] < 0 || edge[3] < 0)
+                {
+                    vertex_fix[edge[0]] = true;
+                    vertex_fix[edge[1]] = true;
+                    Vector3 edge_center = UtilsVertex.vertex_center(mesh.Vertices[edge[0]], mesh.Vertices[edge[1]]);
+                    edge_vertices.Add(edge_center);
+                    vertex_fix.Add(true);
+                }
+                else
+                {
+                    Vector3 vSum = new Vector3(0, 0, 0);
+                    int nElements = 2;
+                    vSum += mesh.Vertices[edge[0]];
+                    vSum += mesh.Vertices[edge[1]];
+                    if(edge[2] >= 0)
+                    {
+                        vSum += face_vertices[edge[2]];
+                        nElements += 1;
+                    }
+                    if(edge[3] >= 0)
+                    {
+                        vSum += face_vertices[edge[3]];
+                        nElements += 1;
+                    }
+                    vSum /= nElements;
+                    edge_vertices.Add(vSum);
+                    if (vertex_fix[0] && vertex_fix[1])
+                    {
+                        vertex_fix.Add(true);
+                    }
+                    else vertex_fix.Add(false);
+                }
+            }
+
+            // get vertex vertex
+            ReadOnlyCollection<int[]> topoVertexEdges = mesh.GetTopoVertexEdges();
+            List<Vector3> vertex_vertices = new List<Vector3>();
+            for (int i = 0; i < mesh.VertexCount(); i++)
+            {
+                if (vertex_fix[i])
+                {
+                    vertex_vertices.Add(mesh.Vertices[i]);
+                }
+                else
+                {
+                    Vector3 averageFaces = new Vector3(0, 0, 0);
+                    Vector3 averageEdges = new Vector3(0, 0, 0);
+                    int nEdges = topoVertexEdges[i].Length;
+
+                    foreach (int edge in topoVertexEdges[i])
+                    {
+                        int face = topoEdges[edge][2];
+                        if (topoEdges[edge][1] == i) face = topoEdges[edge][3];
+                        if (face >= 0)
+                        {
+                            averageFaces += face_vertices[face];
+                        }
+                        Vector3 edge_center = UtilsVertex.vertex_center(mesh.Vertices[topoEdges[edge][0]], mesh.Vertices[topoEdges[edge][1]]);
+                        averageEdges += edge_center;
+                    }
+                    averageEdges *= (2.0f / nEdges);
+                    averageFaces *= (1.0f / nEdges);
+
+                    Vector3 v = new Vector3(mesh.Vertices[i].x, mesh.Vertices[i].y, mesh.Vertices[i].z);
+                    v *= nEdges - 3;
+                    v += averageFaces;
+                    v += averageEdges;
+                    v *= (1.0f / nEdges);
+                    vertex_vertices.Add(v);
+                }
+            }
+
+            // collect new faces
+            MolaMesh newMesh = new MolaMesh();
+            for (int i = 0; i < mesh.FacesCount(); i++)
+            {
+                int[] face = mesh.Faces[i];
+                int v1 = face[^2];
+                int v2 = face[^1];
+                foreach (int v3 in face)
+                {
+                    int edge1 = mesh.AdjacentEdgeToVertices(v1, v2);
+                    int edge2 = mesh.AdjacentEdgeToVertices(v2, v3);
+                    if (edge1 >= 0 && edge2 >= 0)
+                    {
+                        Vector3[] newFace = new Vector3[] { edge_vertices[edge1], vertex_vertices[v2], edge_vertices[edge2], face_vertices[i] };
+                        newMesh.AddFace(newFace);
+                    }
+                    v1 = v2;
+                    v2 = v3;
+                }
+            }
+            newMesh.WeldVertices();
+            newMesh.UpdateTopology();
+            return newMesh;
         }
         /// <summary>
         /// Extrudes the face straight by distance height.

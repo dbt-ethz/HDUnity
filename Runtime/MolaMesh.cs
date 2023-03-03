@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 // using static UnityEditor.FilePathAttribute;
@@ -441,6 +442,30 @@ namespace Mola
 				}
 			}
 		}
+		public void WeldVertices()
+        {
+			List<Vector3> welded_vertices = new List<Vector3>();
+
+            foreach (int[] face in Faces)
+            {
+				for (int i = 0; i < face.Length; i++)
+				{
+					Vector3 vertex = Vertices[face[i]];
+					int v = welded_vertices.IndexOf(vertex);
+					if(v >= 0)
+                    {
+						face[i] = v;
+                    }
+                    else
+                    {
+						welded_vertices.Add(vertex);
+						face[i] = welded_vertices.Count - 1;
+                    }
+				}
+			}
+			Vertices = welded_vertices;
+			Colors = Enumerable.Repeat(Color.white, Vertices.Count).ToList();
+		}
 		private void AttachEdgeToVertex(int vertexIndex, int edgeIndex)
 		{
 			int[] edges = topoVertexEdges[vertexIndex];
@@ -478,7 +503,7 @@ namespace Mola
 			AttachEdgeToVertex(v2, edgeIndex);
 			return edgeIndex;
 		}
-		private int AdjacentEdgeToVertices(int v1, int v2)
+		public int AdjacentEdgeToVertices(int v1, int v2)
 		{
 			int[] vEdges = topoVertexEdges[v1];
 			for (int i = 0; i < vEdges.Length; i++)
