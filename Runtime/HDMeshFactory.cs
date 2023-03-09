@@ -24,8 +24,27 @@ namespace HD
 			}
 			mesh.AddFace(quad);
 		}
-		
-		public static void AddQuadByLine(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
+
+        public static void AddQuad(HDMesh mesh, float x1, float y1, float z1, float x2, float y2, float z2, float x3, float y3, float z3, float x4, float y4, float z4,  bool flip = false)
+        {
+            int[] quad = new int[4];
+            if (!flip)
+            {
+                quad[0] = mesh.AddVertex(x1, y1, z1);
+                quad[1] = mesh.AddVertex(x2, y2, z2);
+                quad[2] = mesh.AddVertex(x3, y3, z3);
+                quad[3] = mesh.AddVertex(x4, y4, z4);
+            }
+            else
+            {
+                quad[3] = mesh.AddVertex(x1, y1, z1);
+                quad[2] = mesh.AddVertex(x2, y2, z2);
+                quad[1] = mesh.AddVertex(x3, y3, z3);
+                quad[0] = mesh.AddVertex(x4, y4, z4);
+            }
+            mesh.AddFace(quad);
+        }
+        public static void AddQuadByLine(HDMesh mesh, Vector2 a,Vector2 b, float z1,float z2 , Color color, bool flip)
 		{
 			AddQuad(mesh, a.x, z1, a.y, b.x, z1, b.y, b.x, z2, b.y, a.x, z2, a.y, color, flip);
 		}
@@ -138,105 +157,85 @@ namespace HD
 			AddBoxQuads(mesh,v);
 		}
 
+		//public const static Color StandardColor=Color.white;
 
-		public static void AddQuadX0(HDMesh mesh, int x, int y, int z, Color color)
-		{
-			int x0 = x;
-			int y0 = y;
-			int y1 = y + 1;
-			int z0 = z;
-			int z1 = z + 1;
-			int[] quadX0 = new int[4];
-			quadX0[3] = mesh.AddVertex(x0, y0, z0, color);
-			quadX0[2] = mesh.AddVertex(x0, y1, z0, color);
-			quadX0[1] = mesh.AddVertex(x0, y1, z1, color);
-			quadX0[0] = mesh.AddVertex(x0, y0, z1, color);
-			mesh.AddFace(quadX0);
-		}
-		public static void AddQuadX1(HDMesh mesh, int x, int y, int z, Color color)
-		{
-			int x1 = x + 1;
-			int y0 = y;
-			int y1 = y + 1;
-			int z0 = z;
-			int z1 = z + 1;
-			int[] quadX1 = new int[4];
-			quadX1[0] = mesh.AddVertex(x1, y0, z0, color);
-			quadX1[1] = mesh.AddVertex(x1, y1, z0, color);
-			quadX1[2] = mesh.AddVertex(x1, y1, z1, color);
-			quadX1[3] = mesh.AddVertex(x1, y0, z1, color);
-			mesh.AddFace(quadX1);
-		}
-		public static void AddQuadY1(HDMesh mesh, int x, int y, int z, Color color)
-		{
-			int x0 = x;
-			int x1 = x + 1;
-			int y1 = y + 1;
-			int z0 = z;
-			int z1 = z + 1;
-			int[] quadY1 = new int[4];
-			quadY1[3] = mesh.AddVertex(x0, y1, z0, color);
-			quadY1[2] = mesh.AddVertex(x1, y1, z0, color);
-			quadY1[1] = mesh.AddVertex(x1, y1, z1, color);
-			quadY1[0] = mesh.AddVertex(x0, y1, z1, color);
-			mesh.AddFace(quadY1);
-		}
-		public static void AddQuadY0(HDMesh mesh, int x, int y, int z, Color color,bool flip=false)
-		{
-			int x0 = x;
-			int x1 = x + 1;
-			int y0 = y;
-			int z0 = z;
-			int z1 = z + 1;
-			int[] quadY0 = new int[4];
-			if (!flip) { 
-				quadY0[0] = mesh.AddVertex(x0, y0, z0, color);
-			quadY0[1] = mesh.AddVertex(x1, y0, z0, color);
-			quadY0[2] = mesh.AddVertex(x1, y0, z1, color);
-			quadY0[3] = mesh.AddVertex(x0, y0, z1, color);
-			}
-            else
-            {
-				quadY0[3] = mesh.AddVertex(x0, y0, z0, color);
-				quadY0[2] = mesh.AddVertex(x1, y0, z0, color);
-				quadY0[1] = mesh.AddVertex(x1, y0, z1, color);
-				quadY0[0] = mesh.AddVertex(x0, y0, z1, color);
-			}
-				
-            
-			mesh.AddFace(quadY0);
-		}
-
-		public static void AddQuadZ1(HDMesh mesh, int x, int y, int z, Color color)
-		{
-			int x0 = x;
-			int x1 = x + 1;
-			int y0 = y;
-			int y1 = y + 1;
-			int z1 = z + 1;
-			int[] quadZ1 = new int[4];
-			quadZ1[0] = mesh.AddVertex(x0, y0, z1, color);
-			quadZ1[1] = mesh.AddVertex(x1, y0, z1, color);
-			quadZ1[2] = mesh.AddVertex(x1, y1, z1, color);
-			quadZ1[3] = mesh.AddVertex(x0, y1, z1, color);
-			mesh.AddFace(quadZ1);
-		}
-		public static void AddQuadZ0(HDMesh mesh, int x, int y, int z, Color color)
-		{
-			int x0 = x;
-			int x1 = x + 1;
-			int y0 = y;
-			int y1 = y + 1;
-			int z0 = z;
-			int[] quadZ0 = new int[4];
-			quadZ0[3] = mesh.AddVertex(x0, y0, z0, color);
-			quadZ0[2] = mesh.AddVertex(x1, y0, z0, color);
-			quadZ0[1] = mesh.AddVertex(x1, y1, z0, color);
-			quadZ0[0] = mesh.AddVertex(x0, y1, z0, color);
-			mesh.AddFace(quadZ0);
-		}
 		
+		public static void AddQuadX(HDMesh mesh, int x, int y, int z, Color color, bool flip = false)
+		{
+			int x0 = x;
+			int x1 = x;
+			int y0 = y;
+			int y1 = y + 1;
+			int z0 = z;
+			int z1 = z + 1;
+			AddQuad(mesh, x0, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, color,flip);
+			
+		}
+        public static void AddQuadX(HDMesh mesh, int x, int y, int z, bool flip = false)
+        {
+            int x0 = x;
+            int x1 = x;
+            int y0 = y;
+            int y1 = y + 1;
+            int z0 = z;
+            int z1 = z + 1;
+            AddQuad(mesh, x0, y0, z0, x1, y1, z0, x1, y1, z1, x1, y0, z1, flip);
+
+        }
+
+        public static void AddQuadY(HDMesh mesh, int x, int y, int z, Color color,bool flip=false)
+		{
+			int x0 = x;
+			int x1 = x + 1;
+			int y0 = y;
+            int y1 = y;
+            int z0 = z;
+			int z1 = z + 1;
+
+            AddQuad(mesh, x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1, color, flip);
+
+		}
+        public static void AddQuadY(HDMesh mesh, int x, int y, int z, bool flip = false)
+        {
+            int x0 = x;
+            int x1 = x + 1;
+            int y0 = y;
+            int y1 = y;
+            int z0 = z;
+            int z1 = z + 1;
+
+            AddQuad(mesh, x0, y0, z0, x1, y0, z0, x1, y0, z1, x0, y0, z1, flip);
+
+        }
 
 
-	}
+        public static void AddQuadZ(HDMesh mesh, int x, int y, int z, Color color, bool flip = false)
+		{
+			int x0 = x;
+			int x1 = x + 1;
+			int y0 = y;
+			int y1 = y + 1;
+			int z0 = z;
+            int z1 = z;
+
+            AddQuad(mesh, x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0, color, flip);
+
+		}
+        public static void AddQuadZ(HDMesh mesh, int x, int y, int z,  bool flip = false)
+        {
+            int x0 = x;
+            int x1 = x + 1;
+            int y0 = y;
+            int y1 = y + 1;
+            int z0 = z;
+            int z1 = z;
+
+            AddQuad(mesh, x0, y0, z0, x1, y0, z0, x1, y1, z0, x0, y1, z0, flip);
+
+        }
+
+
+
+
+    }
 }

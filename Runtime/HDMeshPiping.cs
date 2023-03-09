@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class HDMeshPiping
 {
+
     public static Vector3 GetCenterAverage(List<Vector3> profile)
     {
         Vector3 center = new Vector3();
@@ -95,11 +96,11 @@ public class HDMeshPiping
         return pipe;
     }
 
-    public static HDMesh PipePolyLineWithConvexProfile(List<Vector3> nodes, List<Vector3> profile, Vector3 up, bool closeStart, bool closeEnd)
+    public static HDMesh PipePolyLineWithConvexProfile(List<Vector3> nodes, List<Vector3> profile, Vector3 up, bool closeStart=false, bool closeEnd=false,bool isRing=false)
     {
         HDMesh pipe = new HDMesh();
         Matrix4x4 m;
-        Matrix4x4 mb = Matrix4x4.LookAt(Vector3.zero, new Vector3(0,0,1), new Vector3(1, 0,0));
+        Matrix4x4 mb = Matrix4x4.LookAt(Vector3.zero, new Vector3(0,0,1), up);
        
         // last direction taken from previous direction
         // todo: check closed ring
@@ -133,6 +134,18 @@ public class HDMeshPiping
                 int j2 = (j + 1) % profile.Count;
                 pipe.AddQuad(i + j, i + j + nSegs, i + j2 + nSegs, i + j2);
             }
+        }
+        if (isRing)
+        {
+            
+                for (int j = 0; j < profile.Count; j++)
+                {
+                    int i1 = pipe.Vertices.Count - nSegs;
+                    int i2 = 0;
+                    int j2 = (j + 1) % profile.Count;
+                    pipe.AddQuad(i1 + j, i2 + j , i2 + j2, i1 + j2);
+                }
+            
         }
 
         if (closeStart)
